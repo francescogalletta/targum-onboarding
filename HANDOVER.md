@@ -1,11 +1,11 @@
 # Handover: publish the Targum onboarding site
 
 ## What this is
-Two static, self-contained HTML pages (no build step, no dependencies beyond Google Fonts):
+One static, self-contained HTML page plus a redirect (no build step, no dependencies beyond Google Fonts):
 
 - `index.html` — **Targum Setup Guide**. Five-question assessment that routes a visitor to one of three setup paths (Claude connector, ChatGPT developer mode, editor-only), with a clickable link on every step that leaves the page, a copyable server URL (`https://targum.video/mcp`) and a first prompt. EN/ES.
-- `challenges.html` — **Targum First Week**. Six guided challenges for agentic-first editing, progress saved in localStorage, a feedback form at the end. EN/ES. Links to `./index.html`.
-- `targum-setup-guide.html`, `targum-challenges.html` — the same pages without the `<html>/<head>/<body>` wrapper (source for the Claude artifact previews). Not needed for hosting; keep or delete.
+- The same page continues into **Targum First Week** after the setup path (`#challenges`): six guided challenges tailored to the visitor's path (assistant prompts for Claude or ChatGPT, editor-only steps otherwise) and content type, progress saved in localStorage, a feedback form at the end. `challenges.html` is now a redirect to `index.html#challenges` for old links.
+- `targum-setup-guide.html` — the same page without the `<html>/<head>/<body>` wrapper (source for the Claude artifact preview). Not needed for hosting; keep or delete. `targum-challenges.html` is the pre-merge challenges page in the same form and is now stale.
 - `.nojekyll` — so GitHub Pages serves files as-is.
 
 ## Task
@@ -23,7 +23,7 @@ Both pages POST anonymously to Supabase project **targum-onboarding** (`bvqdeilz
 - `onboarding_funnel` view gives quick counts. One stray test row `session_id='probe-check'` can be deleted.
 
 ## Known follow-ups (not required for publishing)
+- The editor-only variants of the challenges (shown when the visitor has no assistant) describe editor actions in general terms (Search transcript, Clean up, Make clip, Render, SRT export). Verify the wording against the editor.
 - The setup guide has no screenshots: the animated mock screens were removed because they were not exact renders of the real UIs. Real screenshots can be added per step by appending an `<img>` to the step body in `stepEl()`.
 - The challenges page guesses some editor wording (SRT export button, "Select" vs "Approve" on a clip, where credits are bought). Fix once verified in the editor.
 - Spanish is Spain-flavoured (vídeo, móvil).
-- When the final URL is known, update `CONFIG.setupGuideUrl` in `challenges.html` only if the pages are not hosted side by side.
