@@ -41,6 +41,11 @@ button{font:inherit;color:inherit}
 .lang{display:inline-flex;border:1px solid var(--line-2);border-radius:999px;padding:3px;background:var(--surface)}
 .lang button{border:0;background:transparent;padding:5px 12px;border-radius:999px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted)}
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.navfw{margin-left:auto;display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line-2);border-radius:999px;padding:6px 12px 6px 12px;background:var(--surface);font-weight:600;font-size:14px;cursor:pointer;color:var(--fg);transition:border-color .15s,background .2s}
+.navfw:hover{border-color:var(--fg)}
+.navfw .cnt{font-family:var(--font-mono);font-size:12px;background:var(--ink);color:var(--yellow);padding:1px 7px;border-radius:999px;font-variant-numeric:tabular-nums}
+.navfw[aria-current="page"]{background:var(--yellow);border-color:var(--yellow-deep)}
+.navfw[aria-current="page"] .cnt{background:#141311}
 
 /* Progress tape */
 .tape{display:flex;gap:6px;margin:22px 0 8px}
@@ -217,12 +222,14 @@ p{margin:0}
   .closing{padding:22px 18px}
 }
 @media (prefers-reduced-motion:reduce){.panel{animation:none}}
+@media (max-width:560px){.top{flex-wrap:wrap}.navfw{order:3;flex-basis:100%;justify-content:center;margin-left:0}}
 @media (max-width:560px){.step{grid-template-columns:40px 1fr}.step .n{width:34px;height:34px;font-size:16px;border-radius:9px}body{font-size:16px}}
 </style>
 
 <div class="wrap">
   <header class="top">
     <a class="brand" href="https://targum.video" target="_blank" rel="noopener"><span class="t">T</span><span>Targum</span></a>
+    <button type="button" id="nav-fw" class="navfw"><span class="lbl"></span><span class="cnt"></span></button>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" id="lang-en" data-lang="en" aria-pressed="true">EN</button>
       <button type="button" id="lang-es" data-lang="es" aria-pressed="false">ES</button>
@@ -392,6 +399,7 @@ en:{
     openEditor:"Open the editor",
     privacy:"Progress and answers are stored anonymously to improve these challenges.", faq:"Targum FAQ",
   stepline:"Your first week",
+  navLabel:"First week", navCount:(d,n)=>`${d}/${n}`, navTitle:(d,n)=>`First week challenges: ${d} of ${n} done`, introContinue:(d,n)=>`Continue your first week: ${d} of ${n} done`,
   startChallenges:"Start my first week", introJump:"Already set up? Jump to the first-week challenges",
   resultCtaTitle:"Set up? Your first week starts here.", resultCtaLead:"Six short challenges, all on one recording of yours.",
   backToSetup:"Back to my setup path", findSetup:"Find my setup path", preBackToSetup:"Back to the setup steps",
@@ -571,6 +579,7 @@ es:{
     openEditor:"Abrir el editor",
     privacy:"El progreso y las respuestas se guardan de forma anónima para mejorar estos retos.", faq:"FAQ de Targum",
   stepline:"Tu primera semana",
+  navLabel:"Primera semana", navCount:(d,n)=>`${d}/${n}`, navTitle:(d,n)=>`Retos de la primera semana: ${d} de ${n} hechos`, introContinue:(d,n)=>`Sigue con tu primera semana: ${d} de ${n} hechos`,
   startChallenges:"Empezar mi primera semana", introJump:"¿Ya lo tienes configurado? Ve a los retos de la primera semana",
   resultCtaTitle:"¿Configurado? Tu primera semana empieza aquí.", resultCtaLead:"Seis retos cortos, todos con una grabación tuya.",
   backToSetup:"Volver a mi ruta de configuración", findSetup:"Encontrar mi ruta de configuración", preBackToSetup:"Volver a los pasos de configuración",
@@ -673,6 +682,7 @@ function render(){
   const tr=t(); document.documentElement.lang=state.lang;
   const changed = state.screen!==lastScreen; const focusId=document.activeElement&&document.activeElement.id;
   $("lang-en").setAttribute("aria-pressed", state.lang==="en"); $("lang-es").setAttribute("aria-pressed", state.lang==="es");
+  { const nf=$("nav-fw"); const d=state.done.length; nf.querySelector(".lbl").textContent=tr.fw.navLabel; nf.querySelector(".cnt").textContent=tr.fw.navCount(d,IDS.length); nf.title=tr.fw.navTitle(d,IDS.length); nf.setAttribute("aria-label",tr.fw.navTitle(d,IDS.length)); if(state.screen==="challenges") nf.setAttribute("aria-current","page"); else nf.removeAttribute("aria-current"); }
   const main=$("main"); main.replaceChildren();
   const qs=activeQuestions(); const tape=$("tape"); tape.replaceChildren(); qs.forEach((k,i)=>{ const sp=h("span"); if(state.screen==="question"){ if(i<state.qi) sp.className="done"; if(i===state.qi) sp.className="on"; } if(state.screen==="result"||state.screen==="challenges") sp.className="done"; tape.append(sp); });
   $("stepline").textContent = state.screen==="intro"? tr.intro : state.screen==="question"? tr.stepOf(state.qi+1, qs.length) : state.screen==="challenges"? tr.fw.stepline : tr.result;
@@ -688,7 +698,7 @@ function renderIntro(tr){
     h("p",{class:"lead"},tr.heroLead),
     h("p",{class:"small heads"},tr.headsUp),
     h("div",{class:"hero-row"}, h("button",{type:"button",class:"btn btn-primary",onclick:()=>{ state.screen="question"; state.qi=0; track("quiz_start"); saveSession(false); render(); }},tr.start,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","intro")},tr.skip), h("span",{class:"small"},tr.takes)),
-    h("button",{type:"button",class:"linkbtn",style:"justify-self:start",onclick:()=>goChallenges("intro")},tr.fw.introJump+" →"),
+    h("button",{type:"button",class:"linkbtn",style:"justify-self:start",onclick:()=>goChallenges("intro")},(state.done.length?tr.fw.introContinue(state.done.length,IDS.length):tr.fw.introJump)+" →"),
     h("div",{class:"fact"}, tr.facts.map(([b,l])=>h("div",{},h("b",{},b),h("span",{},l))))
   );
 }
@@ -868,6 +878,7 @@ function renderClosing(f){
   return sec;
 }
 
+$("nav-fw").addEventListener("click",()=>{ if(state.screen==="challenges"){ window.scrollTo({top:0,behavior:"smooth"}); return; } goChallenges("nav"); });
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{ state.lang=b.dataset.lang; persist(); track("lang_change",null,state.lang); render(); }));
 render();
 track("page_view", null, state.lang);
