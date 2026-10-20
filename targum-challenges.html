@@ -1,0 +1,515 @@
+<title>Targum First Week</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one centered column; progress reads as a timeline scrubber with a yellow playhead, challenges are numbered like timecodes. */
+:root{
+  --yellow:#FBDE4B; --yellow-deep:#E7C51D; --ink:#141311; --ink-2:#4C4A42; --ink-3:#8A877B;
+  --bg:#FFFDF5; --surface:#FFFFFF; --line:#E9E4CF; --line-2:#D6D0B3;
+  --fg:var(--ink); --muted:var(--ink-2); --faint:var(--ink-3);
+  --ok:#1F7A4D; --warn:#A8600A;
+  --on-yellow:#141311;
+  --font-display:"Bricolage Grotesque","Avenir Next Condensed","Arial Narrow",sans-serif;
+  --font-body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:14px; --shadow:0 1px 0 rgba(20,19,17,.05),0 10px 30px -12px rgba(20,19,17,.18);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#F3F0E4; --ink-2:#C9C5B4; --ink-3:#8E8A79; --bg:#131210; --surface:#1C1B18; --line:#2C2A24; --line-2:#3B3830;
+  --fg:var(--ink); --muted:var(--ink-2); --faint:var(--ink-3); --ok:#5CC48C; --warn:#E3A24A;
+  --shadow:0 1px 0 rgba(0,0,0,.4),0 14px 34px -14px rgba(0,0,0,.7); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --ink:#F3F0E4; --ink-2:#C9C5B4; --ink-3:#8E8A79; --bg:#131210; --surface:#1C1B18; --line:#2C2A24; --line-2:#3B3830;
+  --fg:var(--ink); --muted:var(--ink-2); --faint:var(--ink-3); --ok:#5CC48C; --warn:#E3A24A;
+  --shadow:0 1px 0 rgba(0,0,0,.4),0 14px 34px -14px rgba(0,0,0,.7); color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--yellow-deep);outline-offset:2px}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 72px}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.01em}
+.brand .t{width:34px;height:34px;border-radius:9px;background:var(--yellow);color:var(--on-yellow);display:grid;place-items:center;font-size:20px;font-weight:800}
+.lang{display:inline-flex;border:1px solid var(--line-2);border-radius:999px;padding:3px;background:var(--surface)}
+.lang button{border:0;background:transparent;padding:5px 12px;border-radius:999px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* Type + shared components (from the setup guide) */
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.08;letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,6vw,58px);font-weight:800}
+h2{font-size:clamp(26px,4.2vw,38px);font-weight:700}
+h3{font-size:21px;font-weight:700}
+p{margin:0}
+.lead{font-size:19px;color:var(--muted);max-width:60ch}
+.stack{display:grid;gap:18px}
+.hero{padding-block:40px 6px;display:grid;gap:22px}
+.hero-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:14px 24px;font-weight:700;font-size:17px;cursor:pointer;text-decoration:none;transition:transform .12s,background .2s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--yellow);color:var(--on-yellow)}
+.btn-primary:hover{background:var(--yellow-deep)}
+.btn-ghost{background:transparent;border:1.5px solid var(--line-2);color:var(--fg)}
+.btn-ghost:hover{border-color:var(--fg)}
+.btn-ink{background:var(--ink);color:var(--bg)}
+.small{font-size:14px;color:var(--faint)}
+.mark{background:linear-gradient(transparent 58%,var(--yellow) 58%);padding:0 .1em;color:inherit}
+.heads{font-size:15px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.heads::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--yellow-deep)}
+.note{border-left:4px solid var(--yellow);padding:12px 16px;background:var(--surface);border-radius:0 12px 12px 0;display:grid;gap:4px}
+.note.warn{border-left-color:var(--warn)}
+.note b{font-weight:600}
+.note p{color:var(--muted)}
+.linkbtn{border:0;background:none;padding:6px 0;text-decoration:underline;cursor:pointer;color:var(--muted);font-size:15px}
+.copy{border:0;background:var(--ink);color:var(--bg);border-radius:8px;padding:7px 12px;font-family:var(--font-body);font-weight:600;font-size:13px;cursor:pointer}
+.prompt{background:var(--surface);border:1.5px dashed var(--line-2);border-radius:14px;padding:14px 16px;display:grid;gap:10px}
+.prompt .pl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.prompt q{quotes:none;font-family:var(--font-mono);font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
+.foot{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;align-items:center;font-size:14px;color:var(--faint)}
+.foot a{color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.toast.show{opacity:1}
+.eyebrow{font-family:var(--font-mono);font-size:13px;color:var(--faint);letter-spacing:.04em}
+
+/* Scrubber (progress) */
+.scrub{display:grid;gap:10px;margin-top:6px}
+.scrub-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.scrub-count{font-family:var(--font-mono);font-size:15px;font-variant-numeric:tabular-nums;color:var(--fg)}
+.scrub-count b{font-weight:500;background:var(--ink);color:var(--yellow);padding:2px 7px;border-radius:5px;margin-right:8px}
+.track{position:relative;height:30px;margin-inline:7px}
+.track .rail{position:absolute;left:0;right:0;top:13px;height:4px;border-radius:2px;background:var(--line)}
+.track .segs{position:absolute;inset:11px 0 auto;height:8px;display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+.track .segs span{border-radius:2px;background:transparent}
+.track .segs span.done{background:var(--yellow-deep)}
+.track .tick{position:absolute;top:6px;width:1px;height:18px;background:var(--line-2)}
+.track .head{position:absolute;top:0;width:0;transition:left .35s ease}
+.track .head::before{content:"";position:absolute;left:-1.5px;top:4px;width:3px;height:26px;background:var(--yellow);border-radius:2px;box-shadow:0 0 0 1px var(--on-yellow)}
+.track .head::after{content:"";position:absolute;left:-7px;top:0;width:14px;height:10px;background:var(--yellow);border:1px solid var(--on-yellow);border-radius:3px 3px 7px 7px}
+.labels{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-inline:7px}
+.labels a{font-family:var(--font-mono);font-size:12px;color:var(--faint);text-decoration:none;text-align:center;padding:2px 0;border-radius:4px;font-variant-numeric:tabular-nums}
+.labels a:hover{color:var(--fg)}
+.labels a.done{color:var(--fg)}
+.reset-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+/* Sections */
+.section{display:grid;gap:16px;margin-top:44px}
+.sec-head{display:grid;gap:6px}
+.sec-head p{color:var(--muted);max-width:62ch}
+
+/* Before you start */
+.pre{border:1.5px solid var(--line-2);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.pre-item{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:16px 18px;align-items:start}
+.pre-item + .pre-item{border-top:1px solid var(--line)}
+.pre-item input{appearance:none;-webkit-appearance:none;margin:2px 0 0;width:24px;height:24px;border:1.5px solid var(--line-2);border-radius:7px;background:var(--bg);cursor:pointer;display:grid;place-items:center}
+.pre-item input:checked{background:var(--yellow);border-color:var(--yellow-deep)}
+.pre-item input:checked::after{content:"";width:6px;height:11px;border:solid var(--on-yellow);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.pre-item .txt{display:grid;gap:4px;min-width:0}
+.pre-item label{font-weight:600;cursor:pointer}
+.pre-item p{color:var(--muted);font-size:15.5px}
+.pre-item a{font-weight:600;font-size:15px}
+.pre-item .aside{font-size:13px;color:var(--faint)}
+
+/* Challenge cards */
+.cards{display:grid;gap:14px}
+.card{border:1.5px solid var(--line-2);border-radius:var(--radius);background:var(--surface);scroll-margin-top:calc(env(safe-area-inset-top,0px) + 80px)}
+.card.is-done{border-color:var(--line)}
+.card-h{margin:0}
+.toggle{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;text-align:left;background:none;border:0;padding:16px 18px;cursor:pointer;border-radius:var(--radius)}
+.tc{font-family:var(--font-mono);font-weight:500;font-size:15px;background:var(--ink);color:var(--yellow);padding:5px 9px;border-radius:7px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.is-done .tc{background:var(--yellow);color:var(--on-yellow)}
+.tt{display:grid;gap:3px;min-width:0}
+.tt .name{font-family:var(--font-display);font-size:21px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.tt .meta{font-size:14px;color:var(--faint);display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-family:var(--font-body);font-weight:500}
+.donechip{display:inline-flex;align-items:center;gap:5px;color:var(--ok);font-weight:600}
+.donechip svg{width:14px;height:14px}
+.chev{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line-2);display:grid;place-items:center;transition:transform .2s}
+.chev svg{width:12px;height:12px}
+.toggle[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.card-b{padding:2px 18px 20px;display:grid;gap:20px}
+.goal{font-size:18px;color:var(--fg);max-width:60ch}
+.blk{display:grid;gap:8px}
+.blk h4{font-family:var(--font-body);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.blk ul,.blk ol{margin:0;padding-left:22px;color:var(--muted);display:grid;gap:6px;max-width:64ch}
+.blk ol li::marker{font-family:var(--font-mono);font-size:.85em;color:var(--fg)}
+.blk li{padding-left:2px}
+.twocol{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.done-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.btn-done[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.btn-done svg{width:16px;height:16px}
+
+/* Closing */
+.closing{background:var(--ink);color:var(--bg);border-radius:20px;padding:26px 24px 24px;display:grid;gap:18px;margin-top:44px}
+.closing .eyebrow{color:var(--yellow)}
+.closing h2{color:var(--bg)}
+.closing p{color:color-mix(in srgb,var(--bg) 78%,var(--ink));max-width:60ch}
+.fb{display:grid;gap:14px}
+.fb label{font-weight:600;display:block;margin-bottom:6px}
+.fb textarea{width:100%;min-height:76px;resize:vertical;border-radius:12px;padding:10px 12px;font:inherit;font-size:16px;background:color-mix(in srgb,var(--bg) 8%,var(--ink));color:var(--bg);border:1.5px solid color-mix(in srgb,var(--bg) 35%,var(--ink))}
+.fb textarea:focus-visible{outline:3px solid var(--yellow);outline-offset:1px}
+.closing .btn-ghost{color:var(--bg);border-color:color-mix(in srgb,var(--bg) 40%,var(--ink))}
+.closing .btn-ghost:hover{border-color:var(--bg)}
+.thanks{display:grid;gap:8px;border-left:4px solid var(--yellow);padding:4px 0 4px 16px}
+.thanks b{font-family:var(--font-display);font-size:22px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:560px){
+  body{font-size:16px}
+  .toggle{grid-template-columns:auto 1fr;gap:10px 12px;padding:14px}
+  .toggle .chev{display:none}
+  .tt .name{font-size:19px}
+  .card-b{padding:0 14px 18px}
+  .labels a{font-size:10.5px}
+  .closing{padding:22px 18px}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="https://targum.video" target="_blank" rel="noopener"><span class="t">T</span><span>Targum</span></a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="lang-en" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" id="lang-es" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </header>
+  <main id="main"></main>
+  <footer class="foot" id="foot"></footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- Config ---------- */
+const CONFIG = {
+  supabaseUrl: "https://bvqdeilzhvepczhpkkwe.supabase.co",
+  supabaseKey: "sb_publishable_M5YBI1Q8pflM_fhKAsgYZA_EiD5-4SM",
+  loginUrl: "https://targum.video/login",
+  editorUrl: "https://targum.video/editor",
+  /* Placeholder: replace with the setup guide's final published URL. */
+  setupGuideUrl: "./index.html"
+};
+const IDS = ["c1","c2","c3","c4","c5","c6"];
+
+/* ---------- Copy (EN / ES) ---------- */
+const T = {
+en:{
+  eyebrow:"Test phase · 6 challenges",
+  heroTitle:"Your first week with Targum",
+  heroLead:"Six short challenges, 10 to 20 minutes each. You do every one by asking your assistant in plain words, then checking and approving the result in the editor. Do one a day, or all six in an afternoon.",
+  headsUp:"Nothing gets cut or rendered until you say yes.",
+  progress:(n)=>`${n} of 6 done`, reset:"Reset progress", resetConfirm:"Tap again to reset", resetDone:"Progress reset",
+  jump:(n)=>`Go to challenge ${n}`,
+  preTitle:"Before you start", preLead:"Three things to have ready. Tick them off as you go.",
+  pre:[
+    {id:"p1", t:"A Targum account", p:"Sign in with Google. It takes a few seconds.", link:"Sign in to Targum", href:"login"},
+    {id:"p2", t:"Your assistant connected, with Targum turned on in the chat", p:"Claude or ChatGPT with the Targum connector added. In each new chat, check that Targum is switched on. Not set up yet? The setup guide takes about two minutes.", link:"Open the setup guide", href:"guide"},
+    {id:"p3", t:"One recording uploaded", p:"Any podcast episode, interview or lesson between 5 and 30 minutes. Drop it into the editor and wait until the transcript appears.", link:"Open the editor", href:"editor"}
+  ],
+  listTitle:"The six challenges", listLead:"Go in order. Each one builds on the last, and they all use the same recording.",
+  you:"you'll learn", learn:"You'll learn", doThis:"Do this", prompt:"Paste this to your assistant", copy:"Copy", copied:"Copied", copyPrompt:"Copy prompt",
+  worked:"How you know it worked", tip:"Tip", stuck:"If it doesn't work",
+  min:(m)=>`${m} min`, done:"Done", markDone:"Mark as done", isDone:"Done. Undo?", next:"Next challenge",
+  allDoneToast:"All six done. Nice work.",
+  ch:[
+    {t:"Meet your recording", mins:10,
+     goal:"Get your assistant to tell you what your recording is about, who speaks, and where the best moments are.",
+     learn:["Your assistant works from the transcript, the words that were said. It doesn't watch the video.","It answers with times, so you can jump straight to each moment in the editor."],
+     steps:["Open a new chat in Claude or ChatGPT and check that Targum is turned on (the + button at the bottom of the chat).","Paste the message below and send it. If you have several recordings, add the name of the one you want.","Read the answer. You should get a short summary, the speakers, and three moments with times like 12:40.","Open the editor, open the same recording, and go to one of those times. Play it and see if you agree."],
+     prompt:"Open my latest recording in Targum. In a few sentences, tell me what it's about and who is speaking. Then give me the 3 best moments, with the start and end time of each and one line on why it works.",
+     worked:["The summary matches what you remember from the recording.","When you play the times in the editor, they land on the moments it described."],
+     tip:"Keep asking. Try \"Why that one?\" or \"Find where we talk about pricing.\" Follow-up questions are where it gets useful.",
+     fix:"Your assistant says it can't see Targum: turn Targum on in this chat and ask again. It asks which project: give it the recording's name exactly as it shows in the editor."},
+    {t:"Clean it up", mins:15,
+     goal:"Remove stutters, filler words, false starts and long pauses without losing anything you want to keep.",
+     learn:["Your assistant only suggests cuts. Nothing is removed until you accept it in the editor.","The clean-up pass costs a few credits. Trimming silences is free."],
+     steps:["In the same chat, paste the message below.","If your assistant asks before spending credits on the clean-up, say yes.","Open the recording in the editor. The suggested cuts are marked in the transcript.","Play a few of them. Accept the ones that sound right and reject the ones that cut something you want.","Not sure about one? Leave it. A suggestion you don't accept changes nothing."],
+     prompt:"Do a clean-up pass on this recording: find stutters, filler words like \"um\" and \"you know\", and false starts. Also suggest trimming any pause longer than about a second. Just suggest the cuts, I'll review them in the editor. Tell me how many of each you found.",
+     worked:["The editor shows marked suggestions waiting for your decision.","After you accept some, playback skips those bits and sounds tighter."],
+     tip:"If it feels too aggressive, say \"Only cut the obvious stutters, keep it sounding natural\" and ask again.",
+     fix:"You don't see any suggestions in the editor: reload the page. Your assistant stops to ask about credits: that's expected, say yes to continue."},
+    {t:"Make your first clip", mins:15,
+     goal:"Turn your strongest moment into a vertical clip of 45 to 60 seconds that you can watch on your phone.",
+     learn:["A clip is a candidate. It doesn't change your recording, and you can make as many as you like.","Every clip gets its own link you can open or send to someone."],
+     steps:["Paste the message below. If you liked one of the moments from challenge 00:01, mention it.","Your assistant replies with a title, the clip's length and a link.","Send that link to yourself (a message or an email) and open it on your phone.","Watch it from start to finish. Does it open strong and end on a complete thought?","If not, say what to change in plain words: \"Start 5 seconds later\" or \"End right after the joke.\""],
+     prompt:"Make a vertical clip of 45 to 60 seconds from the strongest moment in this recording. It should start with a line that grabs attention and end on a complete thought. Give it a working title and send me the link.",
+     worked:["The link opens on your phone and plays your moment, upright.","The clip also shows up next to your recording in the editor."],
+     tip:"Ask for three options instead of one, then keep the best. Comparing is faster than describing.",
+     fix:"The link says the video is still being prepared: wait a few minutes and open it again. The clip cuts a sentence in half: tell your assistant which words it should start and end on."},
+    {t:"Build a clip from several moments", mins:20,
+     goal:"Stitch two or three moments about one topic into a 90-second clip that opens with a hook.",
+     learn:["Order matters. You can open with a strong line from later in the recording, then go back.","Be specific about what to keep. Your assistant follows your words closely."],
+     steps:["Pick a topic that comes up more than once. Not sure? Ask \"Which topics come up more than once in this recording?\"","Paste the message below and replace [topic] with yours.","Read the plan your assistant gives you: the moments it used, in order, with times.","Open the link and watch. Does each jump make sense?","Adjust in plain words: \"Swap the second and third parts\" or \"Keep the sentence about my first client.\""],
+     prompt:"Make a 90-second clip about [topic]. Use 2 or 3 moments from different parts of the recording. Open with a hook: a strong line from later in the recording, then go back and tell it in order. List the moments you used with their times, and send me the link.",
+     worked:["The clip plays as one story, with no sentence cut in the middle.","The first line makes you want to keep watching."],
+     tip:"If a jump feels abrupt, ask for one more sentence of context before it.",
+     fix:"The clip runs long: say what to drop, not just \"make it shorter\". It picked the wrong moments: name the ones you want by their times."},
+    {t:"Fix the words", mins:15,
+     goal:"Correct misheard names and terms, label your speakers, and export captions with the right spelling.",
+     learn:["Fixes to the transcript carry into your captions and every clip you make.","Speaker names make captions and summaries much easier to follow."],
+     steps:["Paste the message below. Add any names you know are tricky: your show, your guest, products, places.","Read the list of fixes it proposes. Say yes to the right ones and correct any it got wrong.","If it asks who is who, tell it: \"Speaker 1 is me, Ana. Speaker 2 is my guest, Luis.\"","Open the recording in the editor and check a few of the corrected names in the transcript.","Export the captions as an SRT file from the editor, and open it to check the spelling."],
+     prompt:"Read the transcript and find words that were probably misheard: names of people, brands, places and technical terms. Show me a list of fixes before you apply them. Then label the speakers with their real names. Ask me if you're not sure who is who.",
+     worked:["The names are spelled right in the editor's transcript.","The SRT file you exported shows the corrected spelling too."],
+     tip:"Give it your spelling list up front, for example \"My guest is Siobhán and the product is called Nuvola.\"",
+     fix:"The captions still show the old spelling: make sure you approved the fixes, then export again."},
+    {t:"Ship it", mins:20,
+     goal:"Render your best clip as a finished video with captions and a title card, and download it.",
+     learn:["Rendering uses credits, and it only works on a clip you've chosen in the editor.","Your assistant waits until the render is finished and tells you when it's ready."],
+     steps:["In the editor, look at the clips you made and select the one you like best.","Back in the chat, paste the message below.","Your assistant tells you the cost and asks you to confirm. Say yes.","Wait a few minutes. You can keep working; it will tell you when the video is ready.","Download the video from the link it gives you and watch it on your phone."],
+     prompt:"Render the clip I selected in the editor as a vertical video with captions and a short title card at the start. Tell me the cost before you start, wait until the render is finished, then give me the download link.",
+     worked:["You have a video file that plays with captions and a title at the start.","It looks right on your phone, upright and readable."],
+     tip:"Before rendering, ask \"Show me the captions for this clip\" to catch a typo. Fixing it now is cheaper than rendering twice.",
+     fix:"The render is refused: select the clip in the editor first, then ask again. It says you're out of credits: top up in the editor, then repeat the request."}
+  ],
+  closeEyebrow:"After 00:06", closeTitle:"Done with all six?", closeLead:"Three quick questions. Your answers help us make Targum easier for the next creator. A sentence each is plenty.",
+  fbQ:["What was easiest?","What was confusing?","What would you do next with Targum?"],
+  fbSend:"Send answers", fbEmpty:"Write at least one answer first.", fbThanks:"Thank you.", fbThanksP:"We read every answer. Your recording is waiting in the editor whenever you're ready for the next one.", fbAgain:"Send more feedback",
+  openEditor:"Open the editor",
+  privacy:"Progress and answers are stored anonymously to improve these challenges.", faq:"Targum FAQ", guide:"Setup guide"
+},
+es:{
+  eyebrow:"Fase de prueba · 6 retos",
+  heroTitle:"Tu primera semana con Targum",
+  heroLead:"Seis retos cortos, de 10 a 20 minutos cada uno. Todos se hacen igual: le pides a tu asistente lo que quieres con tus palabras y luego revisas y apruebas el resultado en el editor. Uno al día, o los seis en una tarde.",
+  headsUp:"No se corta ni se renderiza nada hasta que tú lo apruebes.",
+  progress:(n)=>`${n} de 6 hechos`, reset:"Reiniciar progreso", resetConfirm:"Pulsa otra vez para reiniciar", resetDone:"Progreso reiniciado",
+  jump:(n)=>`Ir al reto ${n}`,
+  preTitle:"Antes de empezar", preLead:"Tres cosas que necesitas tener listas. Márcalas a medida que las tengas.",
+  pre:[
+    {id:"p1", t:"Una cuenta de Targum", p:"Inicia sesión con Google. Son unos segundos.", link:"Iniciar sesión en Targum", href:"login"},
+    {id:"p2", t:"Tu asistente conectado, con Targum activado en el chat", p:"Claude o ChatGPT con el conector de Targum añadido. En cada chat nuevo, comprueba que Targum está activado. ¿Aún no lo has configurado? La guía de configuración lleva unos dos minutos.", link:"Abrir la guía de configuración", href:"guide"},
+    {id:"p3", t:"Una grabación subida", p:"Cualquier episodio de pódcast, entrevista o clase de entre 5 y 30 minutos. Arrástrala al editor y espera a que aparezca la transcripción.", link:"Abrir el editor", href:"editor"}
+  ],
+  listTitle:"Los seis retos", listLead:"Hazlos en orden. Cada uno parte del anterior y todos usan la misma grabación.",
+  you:"aprenderás", learn:"Aprenderás", doThis:"Qué hacer", prompt:"Pégale esto a tu asistente", copy:"Copiar", copied:"Copiado", copyPrompt:"Copiar mensaje",
+  worked:"Cómo sabes que ha funcionado", tip:"Consejo", stuck:"Si no funciona",
+  min:(m)=>`${m} min`, done:"Hecho", markDone:"Marcar como hecho", isDone:"Hecho. ¿Deshacer?", next:"Siguiente reto",
+  allDoneToast:"Los seis, hechos. Buen trabajo.",
+  ch:[
+    {t:"Conoce tu grabación", mins:10,
+     goal:"Que tu asistente te cuente de qué va tu grabación, quién habla y dónde están los mejores momentos.",
+     learn:["Tu asistente trabaja con la transcripción, con lo que se dijo. No ve el vídeo.","Te responde con tiempos, así que puedes ir directo a cada momento en el editor."],
+     steps:["Abre un chat nuevo en Claude o ChatGPT y comprueba que Targum está activado (el botón + de abajo del chat).","Pega el mensaje de abajo y envíalo. Si tienes varias grabaciones, añade el nombre de la que quieres.","Lee la respuesta. Deberías ver un resumen corto, quién habla y tres momentos con tiempos como 12:40.","Abre el editor, entra en la misma grabación y ve a uno de esos tiempos. Escúchalo y mira si estás de acuerdo."],
+     prompt:"Abre mi última grabación en Targum. En pocas frases, cuéntame de qué trata y quién habla. Luego dame los 3 mejores momentos, con el tiempo de inicio y de fin de cada uno y una frase sobre por qué funciona.",
+     worked:["El resumen coincide con lo que recuerdas de la grabación.","Al reproducir esos tiempos en el editor, caen justo en los momentos que describió."],
+     tip:"Sigue preguntando. Prueba con \"¿Por qué ese?\" o \"Busca dónde hablamos de precios\". Lo útil está en las preguntas de seguimiento.",
+     fix:"Tu asistente dice que no ve Targum: actívalo en este chat y vuelve a preguntar. Te pregunta qué proyecto: dile el nombre de la grabación tal como aparece en el editor."},
+    {t:"Déjala limpia", mins:15,
+     goal:"Quitar tartamudeos, muletillas, frases que empiezan en falso y pausas largas sin perder nada que quieras conservar.",
+     learn:["Tu asistente solo sugiere cortes. No se quita nada hasta que lo aceptas en el editor.","La limpieza cuesta unos pocos créditos. Recortar silencios es gratis."],
+     steps:["En el mismo chat, pega el mensaje de abajo.","Si tu asistente te pregunta antes de gastar créditos en la limpieza, dile que sí.","Abre la grabación en el editor. Los cortes sugeridos aparecen marcados en la transcripción.","Escucha unos cuantos. Acepta los que suenan bien y rechaza los que se llevan algo que quieres.","¿Dudas con alguno? Déjalo. Una sugerencia que no aceptas no cambia nada."],
+     prompt:"Haz una limpieza de esta grabación: busca tartamudeos, muletillas como \"eh\" o \"o sea\" y falsos comienzos. Sugiere también recortar las pausas de más de un segundo, más o menos. Solo sugiere los cortes, yo los reviso en el editor. Dime cuántos has encontrado de cada tipo.",
+     worked:["El editor muestra sugerencias marcadas esperando tu decisión.","Después de aceptar algunas, la reproducción se salta esos trozos y suena más ágil."],
+     tip:"Si te parece demasiado agresivo, dile \"Corta solo los tartamudeos claros, que suene natural\" y pídelo otra vez.",
+     fix:"No ves sugerencias en el editor: recarga la página. Tu asistente se para a preguntarte por los créditos: es normal, dile que sí para seguir."},
+    {t:"Haz tu primer clip", mins:15,
+     goal:"Convertir tu mejor momento en un clip vertical de 45 a 60 segundos que puedas ver en el móvil.",
+     learn:["Un clip es una propuesta. No cambia tu grabación y puedes hacer tantos como quieras.","Cada clip tiene su propio enlace para abrirlo o mandárselo a alguien."],
+     steps:["Pega el mensaje de abajo. Si te gustó alguno de los momentos del reto 00:01, menciónalo.","Tu asistente te responde con un título, la duración del clip y un enlace.","Mándate ese enlace (por mensaje o por correo) y ábrelo en el móvil.","Míralo entero. ¿Empieza con fuerza y acaba con una idea completa?","Si no, di qué cambiar con tus palabras: \"Empieza 5 segundos después\" o \"Termina justo después del chiste\"."],
+     prompt:"Haz un clip vertical de 45 a 60 segundos con el momento más fuerte de esta grabación. Que empiece con una frase que enganche y termine con una idea completa. Ponle un título provisional y mándame el enlace.",
+     worked:["El enlace se abre en el móvil y reproduce tu momento en vertical.","El clip también aparece junto a tu grabación en el editor."],
+     tip:"Pide tres opciones en vez de una y quédate con la mejor. Comparar es más rápido que describir.",
+     fix:"El enlace dice que el vídeo aún se está preparando: espera unos minutos y vuelve a abrirlo. El clip corta una frase a la mitad: dile a tu asistente con qué palabras debe empezar y terminar."},
+    {t:"Monta un clip con varios momentos", mins:20,
+     goal:"Unir dos o tres momentos sobre un mismo tema en un clip de 90 segundos que empiece con gancho.",
+     learn:["El orden importa. Puedes abrir con una frase fuerte de más adelante y luego volver atrás.","Concreta qué quieres conservar. Tu asistente sigue tus palabras al pie de la letra."],
+     steps:["Elige un tema que salga más de una vez. ¿No lo tienes claro? Pregunta \"¿Qué temas salen más de una vez en esta grabación?\"","Pega el mensaje de abajo y cambia [tema] por el tuyo.","Lee el plan que te da tu asistente: los momentos que ha usado, en orden y con tiempos.","Abre el enlace y míralo. ¿Tiene sentido cada salto?","Ajusta con tus palabras: \"Cambia de orden la segunda y la tercera parte\" o \"Deja la frase sobre mi primer cliente\"."],
+     prompt:"Haz un clip de 90 segundos sobre [tema]. Usa 2 o 3 momentos de distintas partes de la grabación. Empieza con un gancho: una frase fuerte de más adelante, y luego vuelve atrás y cuéntalo en orden. Dime qué momentos has usado con sus tiempos y mándame el enlace.",
+     worked:["El clip se ve como una sola historia, sin frases cortadas a la mitad.","La primera frase te deja con ganas de seguir viendo."],
+     tip:"Si un salto queda brusco, pide una frase más de contexto antes.",
+     fix:"El clip se alarga: di qué quitar, no solo \"hazlo más corto\". Ha elegido momentos que no eran: nombra los que quieres por sus tiempos."},
+    {t:"Corrige las palabras", mins:15,
+     goal:"Corregir nombres y términos mal transcritos, poner nombre a quien habla y exportar subtítulos bien escritos.",
+     learn:["Lo que corriges en la transcripción pasa a tus subtítulos y a todos tus clips.","Con los nombres de quien habla, los subtítulos y los resúmenes se siguen mucho mejor."],
+     steps:["Pega el mensaje de abajo. Añade los nombres que sabes que son difíciles: tu programa, tu invitado, productos, lugares.","Lee la lista de correcciones que te propone. Acepta las buenas y corrige las que estén mal.","Si te pregunta quién es quién, díselo: \"El hablante 1 soy yo, Ana. El hablante 2 es mi invitado, Luis.\"","Abre la grabación en el editor y comprueba algunos de los nombres corregidos en la transcripción.","Exporta los subtítulos en formato SRT desde el editor y ábrelos para revisar cómo se escriben."],
+     prompt:"Lee la transcripción y busca palabras que probablemente se entendieron mal: nombres de personas, marcas, lugares y términos técnicos. Enséñame una lista de correcciones antes de aplicarlas. Después pon a cada hablante su nombre real. Pregúntame si no tienes claro quién es quién.",
+     worked:["Los nombres aparecen bien escritos en la transcripción del editor.","El archivo SRT que exportaste también tiene la ortografía corregida."],
+     tip:"Dale tu lista de nombres desde el principio, por ejemplo \"Mi invitada es Siobhán y el producto se llama Nuvola\".",
+     fix:"Los subtítulos siguen con la ortografía antigua: comprueba que aprobaste las correcciones y vuelve a exportar."},
+    {t:"Publícalo", mins:20,
+     goal:"Renderizar tu mejor clip como vídeo terminado, con subtítulos y una cartela de título, y descargarlo.",
+     learn:["Renderizar gasta créditos y solo funciona con un clip que hayas elegido en el editor.","Tu asistente espera a que termine el render y te avisa cuando está listo."],
+     steps:["En el editor, mira los clips que has hecho y selecciona el que más te guste.","Vuelve al chat y pega el mensaje de abajo.","Tu asistente te dice cuánto cuesta y te pide confirmación. Dile que sí.","Espera unos minutos. Puedes seguir con otra cosa; te avisará cuando el vídeo esté listo.","Descarga el vídeo desde el enlace que te da y míralo en el móvil."],
+     prompt:"Renderiza el clip que he seleccionado en el editor como vídeo vertical, con subtítulos y una cartela corta con el título al principio. Dime el coste antes de empezar, espera a que termine el render y luego dame el enlace de descarga.",
+     worked:["Tienes un archivo de vídeo con subtítulos y un título al principio.","Se ve bien en el móvil, en vertical y fácil de leer."],
+     tip:"Antes de renderizar, pide \"Enséñame los subtítulos de este clip\" para pillar alguna errata. Corregirla ahora sale más barato que renderizar dos veces.",
+     fix:"Rechaza el render: selecciona primero el clip en el editor y vuelve a pedirlo. Dice que no te quedan créditos: recarga en el editor y repite la petición."}
+  ],
+  closeEyebrow:"Después de 00:06", closeTitle:"¿Has hecho los seis?", closeLead:"Tres preguntas rápidas. Tus respuestas nos ayudan a que Targum sea más fácil para el próximo creador. Con una frase en cada una basta.",
+  fbQ:["¿Qué te resultó más fácil?","¿Qué te resultó confuso?","¿Qué harías ahora con Targum?"],
+  fbSend:"Enviar respuestas", fbEmpty:"Escribe al menos una respuesta.", fbThanks:"Gracias.", fbThanksP:"Leemos todas las respuestas. Tu grabación te espera en el editor cuando quieras ir a por la siguiente.", fbAgain:"Enviar más comentarios",
+  openEditor:"Abrir el editor",
+  privacy:"El progreso y las respuestas se guardan de forma anónima para mejorar estos retos.", faq:"FAQ de Targum", guide:"Guía de configuración"
+}};
+
+/* ---------- State ---------- */
+const KEY = "targum-challenges";
+const state = { lang:"en", done:[], pre:[], fbSent:false, fb:["","",""], open:new Set(), started:new Set(), resetArmed:false };
+let saved=null;
+try{ saved=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){ saved=null; }
+if(saved && typeof saved==="object"){
+  if(saved.lang==="en"||saved.lang==="es") state.lang=saved.lang;
+  if(Array.isArray(saved.done)) state.done=saved.done.filter(x=>IDS.includes(x));
+  if(Array.isArray(saved.pre)) state.pre=saved.pre;
+  state.fbSent=!!saved.fbSent;
+} else {
+  try{ const g=JSON.parse(localStorage.getItem("targum-guide")||"null"); if(g&&(g.lang==="en"||g.lang==="es")) state.lang=g.lang; else if((navigator.language||"").toLowerCase().startsWith("es")) state.lang="es"; }
+  catch(e){ if((navigator.language||"").toLowerCase().startsWith("es")) state.lang="es"; }
+}
+{ const first=IDS.find(id=>!state.done.includes(id)); state.open.add(first||IDS[0]); }
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify({lang:state.lang,done:state.done,pre:state.pre,fbSent:state.fbSent})); }catch(e){} }
+const t = () => T[state.lang];
+const $ = (id) => document.getElementById(id);
+function h(tag, attrs={}, ...kids){ const el=document.createElement(tag); for(const [k,v] of Object.entries(attrs)){ if(v==null) continue; if(k==="class") el.className=v; else if(k.startsWith("on")) el.addEventListener(k.slice(2),v); else if(k==="html") el.innerHTML=v; else el.setAttribute(k,v);} for(const k of kids.flat()){ if(k==null) continue; el.append(k.nodeType?k:document.createTextNode(k)); } return el; }
+const tc = (i) => "00:0"+(i+1);
+const ICON = {
+  check:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  chev:'<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+
+/* ---------- Analytics + storage ---------- */
+function sid(){ try{ let s=localStorage.getItem("targum-guide-sid"); if(!s){ s=(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now().toString(36)); localStorage.setItem("targum-guide-sid",s);} return s; }catch(e){ return window.__sid||(window.__sid="s"+Date.now().toString(36)); } }
+const SID = sid();
+let claudeDb = null; (async()=>{ try{ if(window.claude&&window.claude.use){ claudeDb = await window.claude.use("db"); } }catch(e){ claudeDb=null; } })();
+async function post(path, body, extraHeaders={}){
+  const r = await fetch(CONFIG.supabaseUrl + path, { method:"POST", headers:{ "apikey":CONFIG.supabaseKey, "Authorization":"Bearer "+CONFIG.supabaseKey, "Content-Type":"application/json", "Prefer":"return=minimal", ...extraHeaders }, body: JSON.stringify(body), keepalive:true });
+  if(!r.ok) throw new Error("http "+r.status);
+}
+function queueLocal(kind, row){ try{ const k="targum-guide-queue"; const q=JSON.parse(localStorage.getItem(k)||"[]"); q.push({kind,row,t:Date.now()}); localStorage.setItem(k, JSON.stringify(q.slice(-200))); }catch(e){} }
+async function track(event, step, value){
+  const row = { session_id:SID, event, step:step||null, value:value==null?null:String(value), lang:state.lang, path:"challenges" };
+  try{ await post("/rest/v1/onboarding_events", row); return; }catch(e){}
+  try{ if(claudeDb){ await claudeDb.collection("events").doc(SID+"-"+Date.now().toString(36)).set(row); return; } }catch(e){}
+  queueLocal("event", row);
+}
+
+/* ---------- Helpers ---------- */
+function copyText(value, btn, tr, step){ const done=()=>{ const o=btn.textContent; btn.textContent=tr.copied; toast(tr.copied); setTimeout(()=>{ btn.textContent=o; },1500); track("challenge_copy_prompt",step,null); }; try{ navigator.clipboard.writeText(value).then(done).catch(()=>fallbackCopy(value,done)); }catch(e){ fallbackCopy(value,done); } }
+function fallbackCopy(value, done){ const ta=h("textarea",{style:"position:fixed;opacity:0"},value); document.body.append(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){} ta.remove(); }
+function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1600); }
+function hrefFor(k){ return k==="login"?CONFIG.loginUrl:k==="guide"?CONFIG.setupGuideUrl:CONFIG.editorUrl; }
+function ext(k){ return k==="guide"?{}:{target:"_blank",rel:"noopener"}; }
+
+/* ---------- Actions ---------- */
+function toggleOpen(id){
+  if(state.open.has(id)) state.open.delete(id);
+  else { state.open.add(id); if(!state.started.has(id)){ state.started.add(id); track("challenge_start",id,null); } }
+  render();
+}
+function toggleDone(id){
+  const tr=t(); const was=state.done.includes(id);
+  if(was) state.done=state.done.filter(x=>x!==id); else state.done=[...state.done,id];
+  persist(); track("challenge_done",id,was?"undone":"done");
+  if(!was && state.done.length===IDS.length){ track("challenge_complete_all",null,null); toast(tr.allDoneToast); }
+  render();
+}
+function openNext(id){
+  const i=IDS.indexOf(id); const nx=IDS[i+1]; if(!nx) return;
+  state.open.delete(id); state.open.add(nx);
+  if(!state.started.has(nx)){ state.started.add(nx); track("challenge_start",nx,null); }
+  render();
+  const el=$("card-"+nx); if(el){ el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"}); const b=$("tg-"+nx); if(b) b.focus({preventScroll:true}); }
+}
+function resetProgress(){
+  const tr=t();
+  if(!state.resetArmed){ state.resetArmed=true; render(); setTimeout(()=>{ if(state.resetArmed){ state.resetArmed=false; render(); } },3500); return; }
+  state.resetArmed=false; state.done=[]; state.pre=[]; state.fbSent=false; state.fb=["","",""]; state.open=new Set([IDS[0]]);
+  persist(); track("challenge_reset",null,null); toast(tr.resetDone); render();
+}
+
+/* ---------- Render ---------- */
+function render(){
+  const tr=t(); document.documentElement.lang=state.lang;
+  const focusId=document.activeElement&&document.activeElement.id;
+  $("lang-en").setAttribute("aria-pressed", String(state.lang==="en")); $("lang-es").setAttribute("aria-pressed", String(state.lang==="es"));
+  const main=$("main"); main.replaceChildren(renderHero(tr), renderPre(tr), renderList(tr), renderClosing(tr));
+  $("foot").replaceChildren(h("span",{},tr.privacy), h("span",{}, h("a",{href:CONFIG.setupGuideUrl},tr.guide)," · ",h("a",{href:"https://targum.video/faq",target:"_blank",rel:"noopener"},tr.faq)));
+  if(focusId){ const el=$(focusId); if(el&&el!==document.activeElement) el.focus({preventScroll:true}); }
+}
+function renderScrubber(tr){
+  const n=state.done.length;
+  const segs=h("div",{class:"segs"}, IDS.map(id=>h("span",{class:state.done.includes(id)?"done":null})));
+  const ticks=[0,1,2,3,4,5,6].map(i=>h("span",{class:"tick",style:`left:calc(${(i/6*100).toFixed(4)}% - .5px)`}));
+  const track=h("div",{class:"track","aria-hidden":"true"}, h("span",{class:"rail"}), ticks, segs, h("span",{class:"head",style:`left:${(n/6*100).toFixed(4)}%`}));
+  const labels=h("nav",{class:"labels","aria-label":tr.listTitle}, IDS.map((id,i)=>h("a",{href:"#card-"+id,class:state.done.includes(id)?"done":null,"aria-label":tr.jump(i+1),onclick:(e)=>{ e.preventDefault(); if(!state.open.has(id)){ state.open.add(id); if(!state.started.has(id)){ state.started.add(id); track("challenge_start",id,null); } render(); } const el=$("card-"+id); if(el) el.scrollIntoView({block:"start"}); const b=$("tg-"+id); if(b) b.focus({preventScroll:true}); }}, tc(i))));
+  return h("div",{class:"scrub"},
+    h("div",{class:"scrub-head"},
+      h("div",{class:"scrub-count",role:"status","aria-live":"polite"}, h("b",{},tc(n-1)), tr.progress(n)),
+      h("div",{class:"reset-row"}, h("button",{type:"button",id:"reset",class:"linkbtn",onclick:resetProgress}, state.resetArmed?tr.resetConfirm:tr.reset))),
+    h("div",{role:"progressbar","aria-valuemin":"0","aria-valuemax":"6","aria-valuenow":String(n),"aria-valuetext":tr.progress(n)}, track),
+    labels);
+}
+function renderHero(tr){
+  return h("section",{class:"hero"},
+    h("div",{class:"eyebrow"},tr.eyebrow),
+    h("h1",{},tr.heroTitle),
+    h("p",{class:"lead"},tr.heroLead),
+    h("p",{class:"heads"},tr.headsUp),
+    renderScrubber(tr));
+}
+function renderPre(tr){
+  const items=tr.pre.map(it=>{
+    const id="pre-"+it.id; const checked=state.pre.includes(it.id);
+    const box=h("input",{type:"checkbox",id,onchange:(e)=>{ if(e.target.checked){ if(!state.pre.includes(it.id)) state.pre.push(it.id); } else state.pre=state.pre.filter(x=>x!==it.id); persist(); track("challenge_prereq",it.id,e.target.checked?"checked":"unchecked"); }});
+    box.checked=checked;
+    return h("div",{class:"pre-item"}, box, h("div",{class:"txt"}, h("label",{for:id},it.t), h("p",{},it.p), h("a",{href:hrefFor(it.href),...ext(it.href),onclick:()=>track("challenge_link",it.href,null)},it.link+" →")));
+  });
+  return h("section",{class:"section","aria-labelledby":"pre-h"}, h("div",{class:"sec-head"}, h("h2",{id:"pre-h"},tr.preTitle), h("p",{},tr.preLead)), h("div",{class:"pre"},items));
+}
+function renderCard(tr, c, i){
+  const id=IDS[i]; const open=state.open.has(id); const done=state.done.includes(id);
+  const meta=h("span",{class:"meta"}, h("span",{},tr.min(c.mins)), done?h("span",{class:"donechip",html:ICON.check+"<span>"+tr.done+"</span>"}):null);
+  const btn=h("button",{type:"button",class:"toggle",id:"tg-"+id,"aria-expanded":String(open),"aria-controls":"body-"+id,onclick:()=>toggleOpen(id)},
+    h("span",{class:"tc"},tc(i)), h("span",{class:"tt"}, h("span",{class:"name"},c.t), meta), h("span",{class:"chev",html:ICON.chev}));
+  const card=h("article",{class:"card"+(done?" is-done":""),id:"card-"+id}, h("h3",{class:"card-h"},btn));
+  const body=h("div",{class:"card-b",id:"body-"+id});
+  body.hidden=!open;
+  if(open){
+    body.append(
+      h("p",{class:"goal"},c.goal),
+      h("div",{class:"blk"}, h("h4",{},tr.learn), h("ul",{}, c.learn.map(x=>h("li",{},x)))),
+      h("div",{class:"blk"}, h("h4",{},tr.doThis), h("ol",{}, c.steps.map(x=>h("li",{},x)))),
+      h("div",{class:"prompt"}, h("div",{class:"pl"},tr.prompt), h("q",{},c.prompt), h("div",{}, h("button",{type:"button",class:"copy",id:"cp-"+id,onclick:(e)=>copyText(c.prompt,e.currentTarget,tr,id)},tr.copyPrompt))),
+      h("div",{class:"blk"}, h("h4",{},tr.worked), h("ul",{}, c.worked.map(x=>h("li",{},x)))),
+      h("div",{class:"twocol"},
+        h("div",{class:"note"}, h("b",{},tr.tip), h("p",{},c.tip)),
+        h("div",{class:"note warn"}, h("b",{},tr.stuck), h("p",{},c.fix))),
+      h("div",{class:"done-row"},
+        h("button",{type:"button",id:"dn-"+id,class:"btn btn-primary btn-done","aria-pressed":String(done),onclick:()=>toggleDone(id),html:(done?ICON.check:"")+"<span>"+(done?tr.isDone:tr.markDone)+"</span>"}),
+        (done && i<IDS.length-1)?h("button",{type:"button",class:"linkbtn",id:"nx-"+id,onclick:()=>openNext(id)},tr.next+" →"):null));
+  }
+  card.append(body);
+  return card;
+}
+function renderList(tr){
+  return h("section",{class:"section","aria-labelledby":"list-h"},
+    h("div",{class:"sec-head"}, h("h2",{id:"list-h"},tr.listTitle), h("p",{},tr.listLead)),
+    h("div",{class:"cards"}, tr.ch.map((c,i)=>renderCard(tr,c,i))));
+}
+function renderClosing(tr){
+  const sec=h("section",{class:"closing","aria-labelledby":"close-h"}, h("div",{class:"eyebrow"},tr.closeEyebrow), h("h2",{id:"close-h"},tr.closeTitle));
+  if(state.fbSent){
+    sec.append(h("div",{class:"thanks",role:"status"}, h("b",{},tr.fbThanks), h("p",{},tr.fbThanksP)),
+      h("div",{class:"hero-row"}, h("a",{class:"btn btn-primary",href:CONFIG.editorUrl,target:"_blank",rel:"noopener",onclick:()=>track("challenge_link","editor_close",null)},tr.openEditor,"→"),
+        h("button",{type:"button",class:"linkbtn",style:"color:inherit",id:"fb-again",onclick:()=>{ state.fbSent=false; persist(); render(); const f=$("fb-0"); if(f) f.focus(); }},tr.fbAgain)));
+    return sec;
+  }
+  sec.append(h("p",{},tr.closeLead));
+  const form=h("form",{class:"fb",id:"fb-form",novalidate:"",onsubmit:(e)=>{ e.preventDefault();
+    const a=state.fb.map(x=>x.trim().slice(0,150));
+    if(!a.some(Boolean)){ toast(tr.fbEmpty); const f=$("fb-0"); if(f) f.focus(); return; }
+    const value=JSON.stringify({easiest:a[0],confusing:a[1],next:a[2],done:state.done.length}).slice(0,500);
+    track("challenge_feedback",null,value); state.fbSent=true; state.fb=["","",""]; persist(); render(); }});
+  tr.fbQ.forEach((q,i)=>{ const ta=h("textarea",{id:"fb-"+i,name:"fb-"+i,maxlength:"150",rows:"2",oninput:(e)=>{ state.fb[i]=e.target.value; }}); ta.value=state.fb[i]; form.append(h("div",{}, h("label",{for:"fb-"+i},q), ta)); });
+  form.append(h("div",{class:"hero-row"}, h("button",{type:"submit",class:"btn btn-primary",id:"fb-send"},tr.fbSend), h("a",{class:"btn btn-ghost",href:CONFIG.editorUrl,target:"_blank",rel:"noopener",onclick:()=>track("challenge_link","editor_close",null)},tr.openEditor)));
+  sec.append(form);
+  return sec;
+}
+
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{ if(state.lang===b.dataset.lang) return; state.lang=b.dataset.lang; persist(); track("lang_change",null,state.lang); render(); }));
+render();
+track("challenge_view", null, state.lang);
+</script>

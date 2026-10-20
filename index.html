@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Find the right way to set up Targum with Claude, ChatGPT or the editor.">
+<meta name="theme-color" content="#FBDE4B">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Targum Setup Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one centered column; a yellow "tape" band marks the active step, like a timeline scrubber. */
+:root{
+  --yellow:#FBDE4B; --yellow-deep:#E7C51D; --ink:#141311; --ink-2:#4C4A42; --ink-3:#8A877B;
+  --bg:#FFFDF5; --surface:#FFFFFF; --line:#E9E4CF; --line-2:#D6D0B3;
+  --fg:var(--ink); --muted:var(--ink-2); --faint:var(--ink-3);
+  --ok:#1F7A4D; --warn:#A8600A;
+  --screen-bg:#F6F4EA; --screen-chrome:#FFFFFF; --screen-line:#DAD6C4; --screen-ink:#2A2924; --screen-dim:#B7B3A2;
+  --font-display:"Bricolage Grotesque","Avenir Next Condensed","Arial Narrow",sans-serif;
+  --font-body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius:14px; --shadow:0 1px 0 rgba(20,19,17,.05),0 10px 30px -12px rgba(20,19,17,.18);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#F3F0E4; --ink-2:#C9C5B4; --ink-3:#8E8A79; --bg:#131210; --surface:#1C1B18; --line:#2C2A24; --line-2:#3B3830;
+  --fg:var(--ink); --muted:var(--ink-2); --faint:var(--ink-3); --ok:#5CC48C; --warn:#E3A24A;
+  --screen-bg:#1F1E1A; --screen-chrome:#272620; --screen-line:#3B3930; --screen-ink:#ECE8DA; --screen-dim:#6B685C;
+  --shadow:0 1px 0 rgba(0,0,0,.4),0 14px 34px -14px rgba(0,0,0,.7); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --ink:#F3F0E4; --ink-2:#C9C5B4; --ink-3:#8E8A79; --bg:#131210; --surface:#1C1B18; --line:#2C2A24; --line-2:#3B3830;
+  --fg:var(--ink); --muted:var(--ink-2); --faint:var(--ink-3); --ok:#5CC48C; --warn:#E3A24A;
+  --screen-bg:#1F1E1A; --screen-chrome:#272620; --screen-line:#3B3930; --screen-ink:#ECE8DA; --screen-dim:#6B685C;
+  --shadow:0 1px 0 rgba(0,0,0,.4),0 14px 34px -14px rgba(0,0,0,.7); color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--yellow-deep);outline-offset:2px}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 72px}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.01em}
+.brand .t{width:34px;height:34px;border-radius:9px;background:var(--yellow);color:#141311;display:grid;place-items:center;font-size:20px;font-weight:800}
+.lang{display:inline-flex;border:1px solid var(--line-2);border-radius:999px;padding:3px;background:var(--surface)}
+.lang button{border:0;background:transparent;padding:5px 12px;border-radius:999px;font-weight:600;font-size:14px;cursor:pointer;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* Progress tape */
+.tape{display:flex;gap:6px;margin:22px 0 8px}
+.tape span{flex:1;height:6px;border-radius:3px;background:var(--line);transition:background .3s}
+.tape span.on{background:var(--yellow)}
+.tape span.done{background:var(--yellow-deep)}
+.stepline{font-size:13px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;font-weight:600;min-height:20px}
+
+/* Panels */
+.panel{animation:rise .35s ease both}
+@keyframes rise{from{opacity:.001;transform:translateY(8px)}to{opacity:1;transform:none}}
+h1,h2,h3{font-family:var(--font-display);line-height:1.08;letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,6vw,58px);font-weight:800}
+h2{font-size:clamp(26px,4.2vw,38px);font-weight:700}
+h3{font-size:21px;font-weight:700}
+p{margin:0}
+.lead{font-size:19px;color:var(--muted);max-width:60ch}
+.stack{display:grid;gap:18px}
+.hero{padding-block:40px 10px;display:grid;gap:22px}
+.hero-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:14px 24px;font-weight:700;font-size:17px;cursor:pointer;text-decoration:none;transition:transform .12s,background .2s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--yellow);color:#141311}
+.btn-primary:hover{background:var(--yellow-deep)}
+.btn-ghost{background:transparent;border:1.5px solid var(--line-2);color:var(--fg)}
+.btn-ghost:hover{border-color:var(--fg)}
+.btn-ink{background:var(--ink);color:var(--bg)}
+.small{font-size:14px;color:var(--faint)}
+.mark{background:linear-gradient(transparent 58%,var(--yellow) 58%);padding:0 .1em}
+.fact{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:8px}
+.fact div{border-top:2px solid var(--line-2);padding-top:10px}
+.fact b{display:block;font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.1}
+.fact span{font-size:14px;color:var(--muted)}
+
+/* Questions */
+.q{padding-block:18px 10px;display:grid;gap:20px}
+.opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.opt{border:1.5px solid var(--line-2);background:var(--surface);border-radius:var(--radius);padding:16px 18px;text-align:left;cursor:pointer;display:grid;gap:4px;transition:border-color .15s,transform .12s,box-shadow .15s}
+.opt:hover{border-color:var(--fg);transform:translateY(-1px);box-shadow:var(--shadow)}
+.opt b{font-size:17px;font-weight:600}
+.opt span{font-size:14px;color:var(--muted)}
+.opt[aria-pressed="true"]{border-color:var(--ink);background:var(--yellow);color:#141311}
+.opt[aria-pressed="true"] span{color:#4C4A42}
+.qnav{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.linkbtn{border:0;background:none;padding:6px 0;text-decoration:underline;cursor:pointer;color:var(--muted)}
+
+/* Result */
+.verdict{background:var(--ink);color:var(--bg);border-radius:20px;padding:26px 26px 24px;display:grid;gap:14px;margin-top:10px}
+.verdict .eyebrow{color:var(--yellow);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+.verdict h2{color:var(--bg)}
+.verdict p{color:#D8D4C4;max-width:60ch}
+.verdict .hero-row{margin-top:4px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line-2);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--muted);background:var(--surface)}
+.note{border-left:4px solid var(--yellow);padding:12px 16px;background:var(--surface);border-radius:0 12px 12px 0;display:grid;gap:6px}
+.note.warn{border-left-color:var(--warn)}
+.note.block{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 10%,var(--surface))}
+.heads{font-size:15px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.heads::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--yellow-deep)}
+.note b{font-weight:600}
+.steps{display:grid;gap:28px;margin-top:28px}
+.step{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start}
+.step .n{width:44px;height:44px;border-radius:12px;background:var(--yellow);color:#141311;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:20px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 72px)}
+.step .body{display:grid;gap:12px;min-width:0}
+.step .body p{color:var(--muted);max-width:62ch}
+.step ul{margin:0;padding-left:20px;color:var(--muted);display:grid;gap:4px}
+.ui{display:inline-block;border:1px solid var(--line-2);background:var(--surface);border-radius:6px;padding:0 7px;font-size:.92em;font-weight:600;color:var(--fg);white-space:nowrap}
+.code{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:10px 10px 10px 14px;font-family:var(--font-mono);font-size:14px;flex-wrap:wrap}
+.code code{flex:1;min-width:0;overflow-wrap:anywhere}
+.copy{border:0;background:var(--ink);color:var(--bg);border-radius:8px;padding:7px 12px;font-family:var(--font-body);font-weight:600;font-size:13px;cursor:pointer}
+.prompt{background:var(--surface);border:1.5px dashed var(--line-2);border-radius:14px;padding:14px 16px;display:grid;gap:10px}
+.prompt .pl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.prompt q{quotes:none;font-size:17px}
+.foot{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;align-items:center;font-size:14px;color:var(--faint)}
+.foot a{color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.toast.show{opacity:1}
+
+/* Illustrated screens */
+.shot{position:relative;background:var(--screen-bg);border:1px solid var(--line-2);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);max-width:100%}
+.shot svg{display:block;width:100%;height:auto;font-family:var(--font-body)}
+.shot .cap{position:absolute;left:10px;bottom:10px;background:var(--ink);color:var(--bg);font-size:12px;padding:4px 9px;border-radius:999px;font-weight:600;opacity:.92}
+.shot .ring{animation:ring 2.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes ring{0%,100%{opacity:.35;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
+.shot .cursor{animation:cur 2.4s ease-in-out infinite}
+@keyframes cur{0%{transform:translate(-70px,50px);opacity:0}25%{opacity:1}55%,100%{transform:translate(0,0);opacity:1}}
+.shot .typing{animation:typing 2.8s steps(28) infinite}
+@keyframes typing{0%,15%{clip-path:inset(0 100% 0 0)}75%,100%{clip-path:inset(0 0 0 0)}}
+.shot .blink{animation:blink 1s steps(2) infinite}
+@keyframes blink{to{opacity:0}}
+.shot .toggle-knob{animation:knob 2.4s ease-in-out infinite}
+@keyframes knob{0%,40%{transform:translateX(0)}60%,100%{transform:translateX(14px)}}
+.shot .toggle-track{animation:track 2.4s ease-in-out infinite}
+@keyframes track{0%,40%{fill:var(--screen-dim)}60%,100%{fill:var(--ok)}}
+.shot .appear{animation:appear 2.4s ease-in-out infinite}
+@keyframes appear{0%,45%{opacity:0;transform:translateY(6px)}60%,100%{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.shot *{animation:none!important}.shot .typing{clip-path:none}.shot .toggle-knob{transform:translateX(14px)}.shot .toggle-track{fill:var(--ok)}.shot .appear{opacity:1}.panel{animation:none}}
+@media (max-width:560px){.step{grid-template-columns:40px 1fr}.step .n{width:34px;height:34px;font-size:16px;border-radius:9px}body{font-size:16px}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="https://targum.video" target="_blank" rel="noopener"><span class="t">T</span><span>Targum</span></a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="lang-en" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" id="lang-es" data-lang="es" aria-pressed="false">ES</button>
+    </div>
+  </header>
+  <div class="tape" id="tape" aria-hidden="true"></div>
+  <div class="stepline" id="stepline"></div>
+  <main id="main"></main>
+  <footer class="foot" id="foot"></footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- Config ---------- */
+const CONFIG = {
+  supabaseUrl: "https://bvqdeilzhvepczhpkkwe.supabase.co",
+  supabaseKey: "sb_publishable_M5YBI1Q8pflM_fhKAsgYZA_EiD5-4SM",
+  loginUrl: "https://targum.video/login",
+  editorUrl: "https://targum.video/editor",
+  mcpUrl: "https://targum.video/mcp",
+  claudeConnectorsDoc: "https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp"
+};
+
+/* ---------- Copy (EN / ES) ---------- */
+const T = {
+en:{
+  stepOf:(i,n)=>`Question ${i} of ${n}`, intro:"Before we start", result:"Your setup path",
+  heroTitle:"Edit video by talking to your assistant.",
+  heroLead:"Targum is a video editor your AI assistant can drive. Answer five quick questions and we'll show you exactly what to click to get it working with your setup.",
+  start:"Find my setup", skip:"Skip tutorial", takes:"Takes about a minute",
+  headsUp:"Heads up: nothing gets cut or rendered without your OK.",
+  facts:[["5","questions"],["2 min","typical setup"]],
+  back:"Back", next:"Continue", restart:"Start over", change:"Change answers",
+  q:{
+    assistant:{t:"Which AI assistant do you use most?", s:"Targum connects to assistants that support MCP connectors.",
+      o:[["claude","Claude","Anthropic, on web, desktop or mobile"],["chatgpt","ChatGPT","OpenAI"],["both","Both","I switch between them"],["none","Neither yet","I'd rather start in the editor"]]},
+    mcp:{t:"Have you ever connected an external app to your assistant?", s:"Things like Google Drive, Slack, or a custom MCP server.",
+      o:[["often","Yes, I do it regularly","Comfortable with connectors or MCP servers"],["once","Once or twice","I followed a guide and it worked"],["no","No, never","I know they exist"],["what","What's a connector?","Happy to learn"]]},
+    plan_claude:{t:"Which Claude plan are you on?", s:"Custom connectors are available on paid plans.",
+      o:[["free","Free",""],["pro","Pro",""],["max","Max",""],["team","Team or Enterprise","Your admin may manage connectors"],["unsure","Not sure","We'll show both routes"]]},
+    plan_chatgpt:{t:"Which ChatGPT plan are you on?", s:"Custom connectors depend on your plan and admin settings.",
+      o:[["free","Free",""],["plus","Plus",""],["pro","Pro",""],["business","Business, Enterprise or Edu","Admins control developer mode"],["unsure","Not sure","We'll show both routes"]]},
+    editing:{t:"How do you edit video today?", s:"This changes how we describe what Targum does.",
+      o:[["pro","A pro editor","Premiere, DaVinci Resolve, Final Cut"],["light","A quick tool","CapCut, Descript, Canva, a phone app"],["someone","Someone else edits","I hand off the recording"],["none","I don't edit","Recordings stay raw"]]},
+    content:{t:"What do you mostly record?", s:"Targum judges a recording by what it is.",
+      o:[["video_podcast","Podcasts & conversations",""],["interview","Interviews & testimonials",""],["course","Courses & lessons",""],["live_show","Live streams",""],["demo","Demos & user tests",""],["solo_creator","Solo videos",""]]}
+  },
+  paths:{
+    claude:{eyebrow:"Recommended for you", title:"Connect Targum to Claude", lead:"You'll add Targum as a custom connector once. After that, you edit by chatting: find moments, clean up stutters, make clips, render."},
+    chatgpt:{eyebrow:"Recommended for you", title:"Connect Targum to ChatGPT", lead:"You'll add Targum as a connector in developer mode. After that, you edit by chatting: find moments, clean up stutters, make clips, render."},
+    editor:{eyebrow:"Recommended for you", title:"Start in the Targum editor", lead:"No assistant needed. The editor has the same transcript-first tools: search, clean-up, clips and captions. You can connect an assistant later."}
+  },
+  signin:"Sign in to Targum", openEditor:"Open the editor", copy:"Copy", copied:"Copied", copyPrompt:"Copy prompt",
+  firstPrompt:"Your first prompt", tryIt:"Paste this into a chat with Targum enabled:",
+  mcpExplainer:{t:"What's a connector?", p:"It's how your assistant gets to use Targum for you. You sign in with Google once and say yes to a permissions screen. From then on you just ask: find the best moment, clean up the ums, make a clip. You approve every change before it happens."},
+  planNotes:{
+    claude_free:["Custom connectors need a paid Claude plan.","On the Free plan, use the editor directly (below), or upgrade to Pro and follow the connector steps."],
+    chatgpt_free:["Custom connectors need a paid ChatGPT plan.","On the Free plan, use the editor directly (below)."],
+    chatgpt_consumer:["Developer mode is in beta on Plus and Pro.","If you don't see it in your settings, OpenAI hasn't enabled it for your account yet. Start in the editor instead; nothing is lost."],
+    chatgpt_business:["Your workspace admin controls developer mode.","If the toggle is missing, ask an admin to enable connectors for the workspace."],
+    team:["Team and Enterprise: an Owner adds the connector once.","Members then find Targum under Connectors, labelled Custom, and click Connect."],
+    unsure:["Not sure about your plan?","Open your assistant's settings and look for a Connectors section. If it's there, follow the steps. If not, start in the editor."]
+  },
+  steps:{
+    signin:{t:"Create your Targum account", p:"Sign in with Google. This is the same account you'll approve when the assistant asks for access.", cap:"targum.video/login"},
+    claude_settings:{t:"Open Connectors in Claude settings", p:"On the web or desktop app, open your profile menu, then Settings, then Connectors. Scroll to the bottom and click Add custom connector.", cap:"Settings › Connectors"},
+    claude_add:{t:"Paste the Targum server address", p:"In the dialog, enter the URL below as the remote MCP server URL. Leave Advanced settings alone; Targum uses OAuth, so there's no client ID or secret to enter. Click Add.", cap:"Add custom connector"},
+    oauth:{t:"Approve access", p:"A Targum window opens. Sign in with Google and approve the permissions. By default the assistant can read, suggest and spend a little on analysis; it asks again before anything that uploads, renders or deletes.", cap:"Targum asks for your OK"},
+    claude_enable:{t:"Turn Targum on in a chat", p:"Start a new chat. Click the + button at the bottom left, choose Connectors, and switch on Targum. It stays on for that conversation.", cap:"+ › Connectors › Targum"},
+    gpt_dev:{t:"Turn on developer mode", p:"On chatgpt.com, open Settings, then Connectors (sometimes called Apps). Open Advanced settings and switch Developer mode on. Add connectors on the web first; the desktop and mobile apps pick them up afterwards.", cap:"Settings › Connectors › Advanced"},
+    gpt_create:{t:"Create the Targum connector", p:"Back in Connectors, click Create. Name it Targum, paste the server URL below, set authentication to OAuth, tick the trust box, then click Create.", cap:"Create connector"},
+    gpt_enable:{t:"Use it in a chat", p:"In a new chat, click +, then More, then Developer mode, and pick Targum. ChatGPT shows each tool call before it runs; confirm it.", cap:"+ › More › Developer mode"},
+    upload:{t:"Add your first recording", p:"Open the editor and drop in a video or audio file. Targum transcribes it; you can start editing as soon as the transcript is in, before the video finishes preparing. Note: YouTube links and live streams don't import. Download the file first.", cap:"targum.video/editor"},
+    editor_tour:{t:"Try the three core moves", p:"Search the transcript for a topic, run Clean up to flag stutters and filler, and make a clip from any passage. Nothing is cut until you accept it.", cap:"The editor"},
+    first_prompt:{t:"Say what you want", p:"Talk to the assistant in plain language. It finds the moments, proposes cuts and clips, and waits for your decision."}
+  },
+  editingLine:{
+    pro:"Coming from a pro editor: think of Targum as a very fast rough cut and selects pass. Export captions and bring the result into your timeline, or finish here.",
+    light:"If you use CapCut or Descript today, this will feel familiar: edit the words, the video follows. The difference is that you can delegate the whole pass to your assistant.",
+    someone:"If someone else edits for you, Targum gives you a reviewable draft in minutes. Share a clip link; they can take it from there.",
+    none:"Never edited before? Good. You never touch a timeline. You read the transcript, say what you want, and approve."
+  },
+  prompts:{
+    video_podcast:"Find the three strongest moments in this episode, clean up stutters and long pauses, and make a 60-second vertical clip from the best one.",
+    interview:"Pull every answer about pricing into a short clip, trim the pauses, and give me captions as SRT.",
+    course:"Cut the housekeeping and off-topic tangents, keep every explanation intact, and give me an outline with timestamps.",
+    live_show:"Find the highlights of this stream, remove dead air, and make three clips under 45 seconds.",
+    demo:"Find each moment where the participant struggles, and make a 3-minute highlight of usability problems for the product team.",
+    solo_creator:"Clean up my ums and false starts, then cut this into a tight version under 5 minutes and a 30-second teaser."
+  },
+  allSet:"All set. What happens next", nextTitle:"Your path, in one line",
+  summary:{claude:"Sign in → add connector in Claude → approve → turn it on in a chat → upload → ask.", chatgpt:"Sign in → developer mode in ChatGPT → create connector → approve → pick it in a chat → upload → ask.", editor:"Sign in → upload a recording → search, clean up, clip → connect an assistant whenever you like."},
+  help:"Stuck on a step?", helpLine:"Claude's connector guide", faq:"Targum FAQ", privacy:"Answers are stored anonymously to improve this guide.",
+  ui:{settings:"Settings",connectors:"Connectors",addCustom:"Add custom connector",advanced:"Advanced settings",add:"Add",url:"Remote MCP server URL",googleSignin:"Continue with Google",allow:"Allow",chat:"New chat",enable:"Connectors",search:"Search and tools",devmode:"Developer mode",create:"Create",name:"Name",mcpUrl:"MCP server URL",auth:"Authentication: OAuth",trust:"I trust this application",more:"More",upload:"Drop a video or audio file",transcribing:"Transcribing…",ready:"Ready to work",cleanup:"Clean up",clip:"Make clip",searchT:"Search transcript"}
+},
+es:{
+  stepOf:(i,n)=>`Pregunta ${i} de ${n}`, intro:"Antes de empezar", result:"Tu ruta de configuración",
+  heroTitle:"Edita vídeo hablando con tu asistente.",
+  heroLead:"Targum es un editor de vídeo que tu asistente de IA puede manejar. Responde cinco preguntas rápidas y te mostraremos exactamente dónde hacer clic para que funcione con tu configuración.",
+  start:"Encontrar mi configuración", skip:"Saltar el tutorial", takes:"Lleva más o menos un minuto",
+  headsUp:"Ojo: no se corta ni se renderiza nada sin tu aprobación.",
+  facts:[["5","preguntas"],["2 min","configuración típica"]],
+  back:"Atrás", next:"Continuar", restart:"Empezar de nuevo", change:"Cambiar respuestas",
+  q:{
+    assistant:{t:"¿Qué asistente de IA usas más?", s:"Targum se conecta a asistentes compatibles con conectores MCP.",
+      o:[["claude","Claude","De Anthropic, en web, escritorio o móvil"],["chatgpt","ChatGPT","De OpenAI"],["both","Los dos","Voy alternando"],["none","Ninguno todavía","Prefiero empezar en el editor"]]},
+    mcp:{t:"¿Alguna vez has conectado una app externa a tu asistente?", s:"Por ejemplo Google Drive, Slack o un servidor MCP propio.",
+      o:[["often","Sí, lo hago a menudo","Me manejo con conectores o servidores MCP"],["once","Una o dos veces","Seguí una guía y funcionó"],["no","No, nunca","Sé que existen"],["what","¿Qué es un conector?","Con ganas de aprender"]]},
+    plan_claude:{t:"¿Qué plan de Claude tienes?", s:"Los conectores personalizados están en los planes de pago.",
+      o:[["free","Free",""],["pro","Pro",""],["max","Max",""],["team","Team o Enterprise","Puede que tu administrador gestione los conectores"],["unsure","No lo sé","Te mostramos las dos rutas"]]},
+    plan_chatgpt:{t:"¿Qué plan de ChatGPT tienes?", s:"Los conectores personalizados dependen de tu plan y de tu administrador.",
+      o:[["free","Free",""],["plus","Plus",""],["pro","Pro",""],["business","Business, Enterprise o Edu","El administrador controla el modo desarrollador"],["unsure","No lo sé","Te mostramos las dos rutas"]]},
+    editing:{t:"¿Cómo editas vídeo hoy?", s:"Esto cambia cómo te explicamos lo que hace Targum.",
+      o:[["pro","Con un editor profesional","Premiere, DaVinci Resolve, Final Cut"],["light","Con una herramienta rápida","CapCut, Descript, Canva, una app del móvil"],["someone","Lo edita otra persona","Yo paso la grabación"],["none","No edito","Las grabaciones se quedan en bruto"]]},
+    content:{t:"¿Qué grabas principalmente?", s:"Targum juzga cada grabación según lo que es.",
+      o:[["video_podcast","Pódcasts y conversaciones",""],["interview","Entrevistas y testimonios",""],["course","Cursos y lecciones",""],["live_show","Directos",""],["demo","Demos y pruebas de usuario",""],["solo_creator","Vídeos en solitario",""]]}
+  },
+  paths:{
+    claude:{eyebrow:"Recomendado para ti", title:"Conecta Targum a Claude", lead:"Añadirás Targum como conector personalizado una sola vez. Después editas conversando: buscar momentos, limpiar tartamudeos, hacer clips, renderizar."},
+    chatgpt:{eyebrow:"Recomendado para ti", title:"Conecta Targum a ChatGPT", lead:"Añadirás Targum como conector en modo desarrollador. Después editas conversando: buscar momentos, limpiar tartamudeos, hacer clips, renderizar."},
+    editor:{eyebrow:"Recomendado para ti", title:"Empieza en el editor de Targum", lead:"Sin asistente. El editor tiene las mismas herramientas basadas en la transcripción: búsqueda, limpieza, clips y subtítulos. Puedes conectar un asistente más adelante."}
+  },
+  signin:"Iniciar sesión en Targum", openEditor:"Abrir el editor", copy:"Copiar", copied:"Copiado", copyPrompt:"Copiar prompt",
+  firstPrompt:"Tu primer prompt", tryIt:"Pégalo en un chat con Targum activado:",
+  mcpExplainer:{t:"¿Qué es un conector?", p:"Es lo que permite que tu asistente use Targum por ti. Inicias sesión con Google una vez y aceptas una pantalla de permisos. Desde entonces solo pides: busca el mejor momento, limpia las muletillas, haz un clip. Tú apruebas cada cambio antes de que ocurra."},
+  planNotes:{
+    claude_free:["Los conectores personalizados requieren un plan de pago de Claude.","Con el plan Free, usa el editor directamente (abajo) o pasa a Pro y sigue los pasos del conector."],
+    chatgpt_free:["Los conectores personalizados requieren un plan de pago de ChatGPT.","Con el plan Free, usa el editor directamente (abajo)."],
+    chatgpt_consumer:["El modo desarrollador está en beta en Plus y Pro.","Si no lo ves en tus ajustes, OpenAI aún no lo ha activado para tu cuenta. Empieza en el editor; no pierdes nada."],
+    chatgpt_business:["El administrador de tu espacio controla el modo desarrollador.","Si no aparece el interruptor, pide a un administrador que active los conectores para el espacio."],
+    team:["Team y Enterprise: un Owner añade el conector una vez.","Después, los miembros encuentran Targum en Conectores, etiquetado como Custom, y pulsan Connect."],
+    unsure:["¿No sabes qué plan tienes?","Abre los ajustes de tu asistente y busca una sección de Conectores. Si está, sigue los pasos. Si no, empieza en el editor."]
+  },
+  steps:{
+    signin:{t:"Crea tu cuenta de Targum", p:"Inicia sesión con Google. Es la misma cuenta que aprobarás cuando el asistente pida acceso.", cap:"targum.video/login"},
+    claude_settings:{t:"Abre Conectores en los ajustes de Claude", p:"En la web o la app de escritorio, abre el menú de tu perfil, luego Settings y después Connectors. Baja hasta el final y pulsa Add custom connector.", cap:"Settings › Connectors"},
+    claude_add:{t:"Pega la dirección del servidor de Targum", p:"En el diálogo, introduce la URL de abajo como URL del servidor MCP remoto. No toques Advanced settings; Targum usa OAuth, así que no hay client ID ni secret. Pulsa Add.", cap:"Add custom connector"},
+    oauth:{t:"Aprueba el acceso", p:"Se abre una ventana de Targum. Inicia sesión con Google y aprueba los permisos. Por defecto el asistente puede leer, sugerir y gastar un poco en análisis; vuelve a preguntar antes de subir, renderizar o borrar.", cap:"Targum pide tu aprobación"},
+    claude_enable:{t:"Activa Targum en un chat", p:"Abre un chat nuevo. Pulsa el botón + abajo a la izquierda, elige Connectors y activa Targum. Se queda activado para esa conversación.", cap:"+ › Connectors › Targum"},
+    gpt_dev:{t:"Activa el modo desarrollador", p:"En chatgpt.com, abre Settings y luego Connectors (a veces aparece como Apps). Entra en Advanced settings y activa Developer mode. Añade los conectores primero en la web; las apps de escritorio y móvil los recogen después.", cap:"Settings › Connectors › Advanced"},
+    gpt_create:{t:"Crea el conector de Targum", p:"De vuelta en Connectors, pulsa Create. Ponle el nombre Targum, pega la URL del servidor de abajo, elige autenticación OAuth, marca la casilla de confianza y pulsa Create.", cap:"Create connector"},
+    gpt_enable:{t:"Úsalo en un chat", p:"En un chat nuevo, pulsa +, luego More, después Developer mode y elige Targum. ChatGPT muestra cada llamada a herramienta antes de ejecutarla; confírmala.", cap:"+ › More › Developer mode"},
+    upload:{t:"Añade tu primera grabación", p:"Abre el editor y arrastra un archivo de vídeo o audio. Targum lo transcribe; puedes empezar a editar en cuanto esté la transcripción, antes de que termine de preparar el vídeo. Ojo: los enlaces de YouTube y los directos no se importan. Descarga el archivo primero.", cap:"targum.video/editor"},
+    editor_tour:{t:"Prueba los tres movimientos básicos", p:"Busca un tema en la transcripción, ejecuta Clean up para marcar tartamudeos y muletillas, y haz un clip de cualquier pasaje. No se corta nada hasta que lo aceptes.", cap:"El editor"},
+    first_prompt:{t:"Di lo que quieres", p:"Habla con el asistente en lenguaje natural. Encuentra los momentos, propone cortes y clips, y espera tu decisión."}
+  },
+  editingLine:{
+    pro:"Si vienes de un editor profesional: piensa en Targum como una pasada de selección y montaje en bruto muy rápida. Exporta los subtítulos y lleva el resultado a tu línea de tiempo, o termínalo aquí.",
+    light:"Si hoy usas CapCut o Descript, esto te sonará: editas las palabras y el vídeo sigue. La diferencia es que puedes delegar toda la pasada a tu asistente.",
+    someone:"Si otra persona edita por ti, Targum te da un borrador revisable en minutos. Comparte el enlace del clip y que siga desde ahí.",
+    none:"¿Nunca has editado? Mejor. Nunca tocas una línea de tiempo. Lees la transcripción, dices lo que quieres y apruebas."
+  },
+  prompts:{
+    video_podcast:"Encuentra los tres momentos más fuertes de este episodio, limpia tartamudeos y pausas largas, y haz un clip vertical de 60 segundos con el mejor.",
+    interview:"Junta todas las respuestas sobre precios en un clip corto, recorta las pausas y dame los subtítulos en SRT.",
+    course:"Quita la logística y las digresiones, mantén intacta cada explicación y dame un esquema con marcas de tiempo.",
+    live_show:"Encuentra lo mejor de este directo, elimina el aire muerto y haz tres clips de menos de 45 segundos.",
+    demo:"Encuentra cada momento en que el participante se atasca y haz un resumen de 3 minutos de problemas de usabilidad para el equipo de producto.",
+    solo_creator:"Limpia mis muletillas y falsos arranques, y deja una versión ajustada de menos de 5 minutos y un teaser de 30 segundos."
+  },
+  allSet:"Listo. Qué viene después", nextTitle:"Tu ruta, en una línea",
+  summary:{claude:"Inicia sesión → añade el conector en Claude → aprueba → actívalo en un chat → sube → pide.", chatgpt:"Inicia sesión → modo desarrollador en ChatGPT → crea el conector → aprueba → elígelo en un chat → sube → pide.", editor:"Inicia sesión → sube una grabación → busca, limpia, recorta → conecta un asistente cuando quieras."},
+  help:"¿Atascado en un paso?", helpLine:"Guía de conectores de Claude", faq:"FAQ de Targum", privacy:"Las respuestas se guardan de forma anónima para mejorar esta guía.",
+  ui:{settings:"Settings",connectors:"Connectors",addCustom:"Add custom connector",advanced:"Advanced settings",add:"Add",url:"Remote MCP server URL",googleSignin:"Continuar con Google",allow:"Permitir",chat:"Chat nuevo",enable:"Connectors",search:"Search and tools",devmode:"Developer mode",create:"Create",name:"Name",mcpUrl:"MCP server URL",auth:"Authentication: OAuth",trust:"I trust this application",more:"More",upload:"Suelta un archivo de vídeo o audio",transcribing:"Transcribiendo…",ready:"Listo para trabajar",cleanup:"Clean up",clip:"Make clip",searchT:"Buscar en la transcripción"}
+}};
+
+/* ---------- State ---------- */
+const QUESTION_ORDER = ["assistant","mcp","plan","editing","content"];
+const state = { lang:"en", screen:"intro", qi:0, a:{} };
+try{ const s=localStorage.getItem("targum-guide"); if(s){ const o=JSON.parse(s); if(o&&o.a) Object.assign(state,{lang:o.lang||"en",a:o.a}); } }catch(e){}
+try{ const nav=(navigator.language||"").toLowerCase(); if(!localStorage.getItem("targum-guide") && nav.startsWith("es")) state.lang="es"; }catch(e){}
+function persist(){ try{ localStorage.setItem("targum-guide", JSON.stringify({lang:state.lang,a:state.a})); }catch(e){} }
+const t = () => T[state.lang];
+const $ = (id) => document.getElementById(id);
+function h(tag, attrs={}, ...kids){ const el=document.createElement(tag); for(const [k,v] of Object.entries(attrs)){ if(k==="class") el.className=v; else if(k.startsWith("on")) el.addEventListener(k.slice(2),v); else if(k==="html") el.innerHTML=v; else el.setAttribute(k,v);} for(const k of kids.flat()){ if(k==null) continue; el.append(k.nodeType?k:document.createTextNode(k)); } return el; }
+
+/* ---------- Analytics + storage ---------- */
+function sid(){ try{ let s=localStorage.getItem("targum-guide-sid"); if(!s){ s=(crypto.randomUUID?crypto.randomUUID():Math.random().toString(36).slice(2)+Date.now().toString(36)); localStorage.setItem("targum-guide-sid",s);} return s; }catch(e){ return window.__sid||(window.__sid="s"+Date.now().toString(36)); } }
+const SID = sid();
+let claudeDb = null; (async()=>{ try{ if(window.claude&&window.claude.use){ claudeDb = await window.claude.use("db"); } }catch(e){ claudeDb=null; } })();
+async function post(path, body, extraHeaders={}){
+  const r = await fetch(CONFIG.supabaseUrl + path, { method:"POST", headers:{ "apikey":CONFIG.supabaseKey, "Authorization":"Bearer "+CONFIG.supabaseKey, "Content-Type":"application/json", "Prefer":"return=minimal", ...extraHeaders }, body: JSON.stringify(body), keepalive:true });
+  if(!r.ok) throw new Error("http "+r.status);
+}
+function queueLocal(kind, row){ try{ const k="targum-guide-queue"; const q=JSON.parse(localStorage.getItem(k)||"[]"); q.push({kind,row,t:Date.now()}); localStorage.setItem(k, JSON.stringify(q.slice(-200))); }catch(e){} }
+async function track(event, step, value){
+  const row = { session_id:SID, event, step:step||null, value:value==null?null:String(value), lang:state.lang, path:computePath().key };
+  try{ await post("/rest/v1/onboarding_events", row); return; }catch(e){}
+  try{ if(claudeDb){ await claudeDb.collection("events").doc(SID+"-"+Date.now().toString(36)).set(row); return; } }catch(e){}
+  queueLocal("event", row);
+}
+async function saveSession(completed){
+  const p = { session_id:SID, lang:state.lang, mcp_familiarity:state.a.mcp||null, assistant:state.a.assistant||null, plan:state.a.plan||null, video_editing:state.a.editing||null, content_type:state.a.content||null, path:(state.a.assistant?computePath().key:null), completed:!!completed, user_agent:navigator.userAgent, referrer:document.referrer||null };
+  try{ await post("/rest/v1/rpc/upsert_onboarding_session", {p}); return; }catch(e){}
+  try{ if(claudeDb){ await claudeDb.collection("sessions").doc(SID).set({...p, updated_at:new Date().toISOString()}); return; } }catch(e){}
+  queueLocal("session", p);
+}
+
+/* ---------- Path logic ---------- */
+function computePath(){
+  const a=state.a; const asst=a.assistant; const plan=a.plan;
+  if(!asst || asst==="none") return {key:"editor", notes:[]};
+  if(asst==="claude" || asst==="both"){
+    if(plan==="free") return {key:"editor", notes:["claude_free"], alt:"claude"};
+    const notes=[]; if(plan==="team") notes.push("team"); if(plan==="unsure") notes.push("unsure");
+    return {key:"claude", notes};
+  }
+  if(asst==="chatgpt"){
+    if(plan==="free") return {key:"editor", notes:["chatgpt_free"]};
+    const notes=[]; if(plan==="plus"||plan==="pro") notes.push("chatgpt_consumer"); if(plan==="business") notes.push("chatgpt_business"); if(plan==="unsure") notes.push("unsure");
+    return {key:"chatgpt", notes};
+  }
+  return {key:"editor", notes:[]};
+}
+function questionKey(i){ const k=QUESTION_ORDER[i]; if(k!=="plan") return k; const asst=state.a.assistant; if(asst==="chatgpt") return "plan_chatgpt"; return "plan_claude"; }
+function activeQuestions(){ return QUESTION_ORDER.filter(k=>!(k==="plan" && (state.a.assistant==="none"||!state.a.assistant))); }
+
+/* ---------- Illustrated screens ---------- */
+const NS="http://www.w3.org/2000/svg";
+function s(tag, attrs={}, ...kids){ const el=document.createElementNS(NS,tag); for(const [k,v] of Object.entries(attrs)) el.setAttribute(k,v); for(const k of kids.flat()){ if(k==null) continue; el.append(typeof k==="string"?document.createTextNode(k):k);} return el; }
+function frame(w=640,h=380){ const svg=s("svg",{viewBox:`0 0 ${w} ${h}`,role:"img"}); svg.append(s("rect",{x:0,y:0,width:w,height:h,fill:"var(--screen-bg)"}));
+  svg.append(s("rect",{x:0,y:0,width:w,height:28,fill:"var(--screen-chrome)"})); [14,32,50].forEach(cx=>svg.append(s("circle",{cx,cy:14,r:5,fill:"var(--screen-line)"}))); return svg; }
+function txt(x,y,str,o={}){ return s("text",{x,y,fill:o.fill||"var(--screen-ink)","font-size":o.size||13,"font-weight":o.w||500,"font-family":o.mono?"var(--font-mono)":"var(--font-body)",...(o.anchor?{"text-anchor":o.anchor}:{})},str); }
+function rect(x,y,w,hh,o={}){ return s("rect",{x,y,width:w,height:hh,rx:o.rx??6,fill:o.fill||"var(--screen-chrome)",stroke:o.stroke||"none","stroke-width":o.sw||1}); }
+function ring(x,y,w,hh){ return s("rect",{x:x-5,y:y-5,width:w+10,height:hh+10,rx:10,fill:"none",stroke:"var(--yellow-deep)","stroke-width":3,class:"ring"}); }
+function cursor(x,y){ const g=s("g",{class:"cursor",transform:`translate(0,0)`}); const p=s("path",{d:`M${x} ${y} l0 18 l5 -4 l4 8 l4 -2 l-4 -8 l6 0 z`,fill:"#141311",stroke:"#fff","stroke-width":1.5}); g.append(p); return g; }
+function sidebar(svg, items, active){ svg.append(rect(0,28,170,352,{rx:0,fill:"var(--screen-chrome)"})); items.forEach((it,i)=>{ const y=58+i*30; if(i===active) svg.append(rect(10,y-17,150,26,{rx:6,fill:"var(--screen-bg)"})); svg.append(txt(22,y,it,{fill:i===active?"var(--screen-ink)":"var(--screen-dim)",w:i===active?600:500})); }); }
+function shot(svg, cap){ const d=h("div",{class:"shot"}); d.append(svg); if(cap) d.append(h("span",{class:"cap"},cap)); return d; }
+
+const SCREENS = {
+  signin(u){ const svg=frame(); svg.append(rect(190,90,260,210,{rx:16,stroke:"var(--screen-line)"})); svg.append(rect(300,112,40,40,{rx:10,fill:"var(--yellow)"})); svg.append(txt(320,139,"T",{size:22,w:800,anchor:"middle",fill:"#141311"}));
+    svg.append(txt(320,182,"Sign in to Targum",{size:16,w:700,anchor:"middle"})); svg.append(rect(214,206,212,40,{rx:10,fill:"var(--screen-bg)",stroke:"var(--screen-line)"})); svg.append(txt(320,231,u.googleSignin,{anchor:"middle",w:600})); svg.append(ring(214,206,212,40)); svg.append(cursor(380,236)); return svg; },
+  claude_settings(u){ const svg=frame(); sidebar(svg,["General","Profile","Appearance",u.connectors,"Billing"],3); svg.append(txt(200,66,u.connectors,{size:18,w:700}));
+    ["Google Drive","Gmail","Slack"].forEach((n,i)=>{ const y=92+i*44; svg.append(rect(196,y,420,36,{stroke:"var(--screen-line)"})); svg.append(s("circle",{cx:216,cy:y+18,r:8,fill:"var(--screen-dim)"})); svg.append(txt(234,y+23,n)); svg.append(txt(596,y+23,"Connected",{fill:"var(--screen-dim)",anchor:"end",size:12})); });
+    svg.append(rect(196,250,420,0.5,{fill:"var(--screen-line)"})); svg.append(rect(196,268,190,36,{rx:8,fill:"var(--screen-chrome)",stroke:"var(--screen-line)"})); svg.append(txt(291,291,"+ "+u.addCustom,{anchor:"middle",w:600})); svg.append(ring(196,268,190,36)); svg.append(cursor(360,296)); return svg; },
+  claude_add(u){ const svg=frame(); svg.append(rect(0,28,640,352,{rx:0,fill:"var(--screen-bg)"})); svg.append(rect(130,70,380,250,{rx:14,stroke:"var(--screen-line)"})); svg.append(txt(152,100,u.addCustom,{size:16,w:700}));
+    svg.append(txt(152,132,"Name",{size:12,fill:"var(--screen-dim)"})); svg.append(rect(152,140,336,30,{stroke:"var(--screen-line)",fill:"var(--screen-bg)"})); svg.append(txt(164,160,"Targum"));
+    svg.append(txt(152,194,u.url,{size:12,fill:"var(--screen-dim)"})); svg.append(rect(152,202,336,30,{stroke:"var(--screen-line)",fill:"var(--screen-bg)"})); const ty=txt(164,222,CONFIG.mcpUrl,{mono:true,size:12}); ty.setAttribute("class","typing"); svg.append(ty); svg.append(ring(152,202,336,30));
+    svg.append(txt(152,256,"▸ "+u.advanced,{size:12,fill:"var(--screen-dim)"})); svg.append(rect(420,278,68,30,{rx:8,fill:"#141311"})); svg.append(txt(454,298,u.add,{fill:"#fff",anchor:"middle",w:600})); svg.append(cursor(470,300)); return svg; },
+  oauth(u){ const svg=frame(); svg.append(rect(170,60,300,280,{rx:16,stroke:"var(--screen-line)"})); svg.append(rect(300,80,40,40,{rx:10,fill:"var(--yellow)"})); svg.append(txt(320,107,"T",{size:22,w:800,anchor:"middle",fill:"#141311"}));
+    svg.append(txt(320,146,"Claude wants to use Targum",{size:14,w:700,anchor:"middle"})); ["read your projects and transcripts","suggest cuts and clips","spend a little on analysis"].forEach((l,i)=>{ svg.append(s("circle",{cx:200,cy:174+i*24,r:4,fill:"var(--ok)"})); svg.append(txt(212,178+i*24,l,{size:12,fill:"var(--screen-ink)"})); });
+    svg.append(rect(194,262,252,36,{rx:10,fill:"var(--yellow)"})); svg.append(txt(320,285,u.allow,{anchor:"middle",w:700,fill:"#141311"})); svg.append(ring(194,262,252,36)); svg.append(cursor(400,290)); return svg; },
+  claude_enable(u){ const svg=frame(); svg.append(txt(320,150,u.chat,{size:22,w:700,anchor:"middle",fill:"var(--screen-dim)"})); svg.append(rect(80,290,480,56,{rx:16,stroke:"var(--screen-line)"})); svg.append(s("circle",{cx:108,cy:318,r:12,fill:"var(--screen-bg)",stroke:"var(--screen-line)"})); svg.append(txt(108,323,"+",{anchor:"middle",w:700}));
+    const menu=s("g",{class:"appear"}); menu.append(rect(90,170,220,110,{rx:12,stroke:"var(--screen-line)"})); menu.append(txt(106,194,"Add files",{size:12,fill:"var(--screen-dim)"})); menu.append(txt(106,220,u.enable,{size:12,w:600})); menu.append(txt(106,248,"Targum",{size:12,w:600}));
+    const tr=s("rect",{x:262,y:238,width:30,height:16,rx:8,class:"toggle-track",fill:"var(--screen-dim)"}); const kn=s("circle",{cx:270,cy:246,r:6,fill:"#fff",class:"toggle-knob"}); menu.append(tr,kn); menu.append(ring(100,232,200,28)); svg.append(menu); svg.append(cursor(280,252)); return svg; },
+  gpt_dev(u){ const svg=frame(); sidebar(svg,["General","Notifications","Personalization",u.connectors,"Security"],3); svg.append(txt(200,66,u.connectors,{size:18,w:700}));
+    svg.append(rect(196,86,420,0.5,{fill:"var(--screen-line)"})); svg.append(txt(200,116,u.advanced,{w:600})); svg.append(txt(200,134,"Developer tools and custom MCP servers",{size:11,fill:"var(--screen-dim)"}));
+    svg.append(txt(200,176,u.devmode,{w:600})); svg.append(txt(200,194,"Beta. Enables unverified connectors with full MCP tool access.",{size:11,fill:"var(--screen-dim)"}));
+    const tr=s("rect",{x:566,y:166,width:34,height:18,rx:9,class:"toggle-track",fill:"var(--screen-dim)"}); const kn=s("circle",{cx:575,cy:175,r:7,fill:"#fff",class:"toggle-knob"}); svg.append(tr,kn); svg.append(ring(560,160,46,30)); svg.append(cursor(590,186)); return svg; },
+  gpt_create(u){ const svg=frame(); svg.append(rect(130,46,380,300,{rx:14,stroke:"var(--screen-line)"})); svg.append(txt(152,74,"New connector",{size:16,w:700}));
+    const row=(y,l,v,mono)=>{ svg.append(txt(152,y,l,{size:11,fill:"var(--screen-dim)"})); svg.append(rect(152,y+6,336,26,{stroke:"var(--screen-line)",fill:"var(--screen-bg)"})); const tx=txt(162,y+23,v,{size:12,mono}); return tx; };
+    svg.append(row(96,u.name,"Targum")); const ty=row(140,u.mcpUrl,CONFIG.mcpUrl,true); ty.setAttribute("class","typing"); svg.append(ty); svg.append(ring(152,146,336,26));
+    svg.append(txt(152,202,u.auth,{size:12,w:600})); svg.append(rect(152,218,14,14,{rx:3,stroke:"var(--screen-line)",fill:"var(--yellow)"})); svg.append(txt(158,229,"✓",{size:11,fill:"#141311",anchor:"middle",w:800})); svg.append(txt(174,229,u.trust,{size:12}));
+    svg.append(rect(410,298,78,30,{rx:8,fill:"#141311"})); svg.append(txt(449,318,u.create,{fill:"#fff",anchor:"middle",w:600})); svg.append(cursor(466,322)); return svg; },
+  gpt_enable(u){ const svg=frame(); svg.append(txt(320,120,"ChatGPT",{size:22,w:700,anchor:"middle",fill:"var(--screen-dim)"})); svg.append(rect(80,290,480,56,{rx:16,stroke:"var(--screen-line)"})); svg.append(s("circle",{cx:108,cy:318,r:12,fill:"var(--screen-bg)",stroke:"var(--screen-line)"})); svg.append(txt(108,323,"+",{anchor:"middle",w:700}));
+    const menu=s("g",{class:"appear"}); menu.append(rect(90,150,180,130,{rx:12,stroke:"var(--screen-line)"})); ["Add photos & files","Create image","Deep research",u.more+" ›"].forEach((l,i)=>menu.append(txt(106,176+i*28,l,{size:12,w:i===3?600:500})));
+    menu.append(rect(280,206,180,74,{rx:12,stroke:"var(--screen-line)"})); menu.append(txt(296,232,u.devmode,{size:12,w:600})); menu.append(txt(296,260,"Targum",{size:12,w:600})); menu.append(ring(288,246,164,26)); svg.append(menu); svg.append(cursor(430,268)); return svg; },
+  upload(u){ const svg=frame(); sidebar(svg,["Projects","Library","Templates","Settings"],0); svg.append(txt(200,66,"Projects",{size:18,w:700}));
+    const dz=rect(196,90,420,150,{rx:14,fill:"var(--screen-chrome)",stroke:"var(--yellow-deep)",sw:2}); dz.setAttribute("stroke-dasharray","8 6"); svg.append(dz); svg.append(txt(406,160,u.upload,{anchor:"middle",w:600})); svg.append(txt(406,182,".mp4 .mov .mp3 .wav",{anchor:"middle",size:11,fill:"var(--screen-dim)"}));
+    const g=s("g",{class:"appear"}); g.append(rect(196,262,420,48,{stroke:"var(--screen-line)"})); g.append(rect(206,272,28,28,{rx:6,fill:"var(--yellow)"})); g.append(txt(246,284,"interview-dana.mp4",{size:12,w:600})); g.append(txt(246,300,u.ready,{size:11,fill:"var(--ok)"})); g.append(s("rect",{x:470,y:281,width:130,height:8,rx:4,fill:"var(--screen-bg)"})); g.append(s("rect",{x:470,y:281,width:130,height:8,rx:4,fill:"var(--ok)"})); svg.append(g); svg.append(cursor(406,120)); return svg; },
+  editor_tour(u){ const svg=frame(); svg.append(rect(0,28,640,36,{rx:0,fill:"var(--screen-chrome)"})); [[14,u.searchT],[200,u.cleanup],[300,u.clip]].forEach(([x,l],i)=>{ svg.append(rect(x,34,i===0?170:88,24,{rx:6,fill:i===0?"var(--screen-bg)":"var(--screen-chrome)",stroke:"var(--screen-line)"})); svg.append(txt(x+10,50,l,{size:11,w:i===1?700:500})); });
+    const words=["So","the","secret","sauce","isn't","the","LLM,","um,","it's","the","platform.","The","the","platform","is","what","lets","you","actually","ship."]; let x=24,y=110; words.forEach((w,i)=>{ const wdt=w.length*7.2+6; if(x+wdt>600){x=24;y+=30;} const cut=(w==="um,"||(w==="the"&&i===11)); if(cut){ svg.append(rect(x-3,y-15,wdt,22,{rx:4,fill:"var(--yellow)"})); svg.append(s("line",{x1:x-1,y1:y-4,x2:x+wdt-5,y2:y-4,stroke:"#141311","stroke-width":2})); } svg.append(txt(x,y,w,{size:14,fill:cut?"#141311":"var(--screen-ink)"})); x+=wdt+6; });
+    svg.append(rect(196,230,250,0,{})); svg.append(ring(200,36,88,20)); svg.append(txt(24,230,"Clean up found 2 cuts. Accept?",{size:12,fill:"var(--screen-dim)"})); svg.append(rect(24,244,72,26,{rx:8,fill:"#141311"})); svg.append(txt(60,261,"Accept",{size:11,fill:"#fff",anchor:"middle",w:600})); svg.append(rect(104,244,72,26,{rx:8,stroke:"var(--screen-line)"})); svg.append(txt(140,261,"Reject",{size:11,anchor:"middle",w:600}));
+    svg.append(rect(24,300,592,40,{rx:8,fill:"var(--screen-chrome)",stroke:"var(--screen-line)"})); for(let i=0;i<70;i++){ const hh=6+Math.abs(Math.sin(i*1.7))*22; svg.append(s("rect",{x:34+i*8.2,y:320-hh/2,width:4,height:hh,rx:2,fill:(i>26&&i<30)?"var(--yellow-deep)":"var(--screen-dim)"})); } svg.append(cursor(60,268)); return svg; }
+};
+
+/* ---------- Render ---------- */
+function render(){
+  const tr=t(); document.documentElement.lang=state.lang;
+  $("lang-en").setAttribute("aria-pressed", state.lang==="en"); $("lang-es").setAttribute("aria-pressed", state.lang==="es");
+  const main=$("main"); main.replaceChildren();
+  const qs=activeQuestions(); const tape=$("tape"); tape.replaceChildren(); qs.forEach((k,i)=>{ const sp=h("span"); if(state.screen==="question"){ if(i<state.qi) sp.className="done"; if(i===state.qi) sp.className="on"; } if(state.screen==="result") sp.className="done"; tape.append(sp); });
+  $("stepline").textContent = state.screen==="intro"? tr.intro : state.screen==="question"? tr.stepOf(state.qi+1, qs.length) : tr.result;
+  if(state.screen==="intro") main.append(renderIntro(tr)); else if(state.screen==="question") main.append(renderQuestion(tr)); else main.append(renderResult(tr));
+  $("foot").replaceChildren(h("span",{},tr.privacy), h("span",{}, h("a",{href:"https://targum.video/faq",target:"_blank",rel:"noopener"},tr.faq)," · ",h("a",{href:CONFIG.claudeConnectorsDoc,target:"_blank",rel:"noopener"},tr.helpLine)));
+  window.scrollTo({top:0,behavior:"instant"});
+}
+function renderIntro(tr){
+  return h("section",{class:"panel hero"},
+    h("h1",{html: tr.heroTitle.replace(/assistant|asistente/, m=>`<span class="mark">${m}</span>`)}),
+    h("p",{class:"lead"},tr.heroLead),
+    h("p",{class:"small heads"},tr.headsUp),
+    h("div",{class:"hero-row"}, h("button",{type:"button",class:"btn btn-primary",onclick:()=>{ state.screen="question"; state.qi=0; track("quiz_start"); saveSession(false); render(); }},tr.start,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","intro")},tr.skip), h("span",{class:"small"},tr.takes)),
+    h("div",{class:"fact"}, tr.facts.map(([b,l])=>h("div",{},h("b",{},b),h("span",{},l))))
+  );
+}
+function renderQuestion(tr){
+  const qs=activeQuestions(); const key=qs[state.qi]; const qk=questionKey(QUESTION_ORDER.indexOf(key)); const q=tr.q[qk]; const current=state.a[key];
+  const opts=h("div",{class:"opts",role:"group","aria-label":q.t}, q.o.map(([v,l,sub])=>h("button",{type:"button",class:"opt","aria-pressed":String(current===v),onclick:()=>{ state.a[key]=v; if(key==="assistant") delete state.a.plan; persist(); track("answer",key,v); saveSession(false); setTimeout(()=>{ const n=activeQuestions(); if(state.qi<n.length-1){ state.qi++; } else { state.screen="result"; track("path_shown","result",computePath().key); saveSession(true);} render(); },180); }}, h("b",{},l), sub?h("span",{},sub):null)));
+  return h("section",{class:"panel q"}, h("div",{class:"stack"}, h("h2",{},q.t), h("p",{class:"lead"},q.s)), opts,
+    h("div",{class:"qnav"}, h("button",{type:"button",class:"linkbtn",onclick:()=>{ if(state.qi>0){ state.qi--; } else { state.screen="intro"; } render(); }},"← "+tr.back), current?h("button",{type:"button",class:"btn btn-ink",onclick:()=>{ const n=activeQuestions(); if(state.qi<n.length-1) state.qi++; else { state.screen="result"; track("path_shown","result",computePath().key); saveSession(true);} render(); }},tr.next,"→"):h("span")));
+}
+function codeBox(tr, value){ return h("div",{class:"code"}, h("code",{},value), h("button",{type:"button",class:"copy",onclick:(e)=>copyText(value,e.currentTarget,tr)},tr.copy)); }
+function copyText(value, btn, tr){ const done=()=>{ const o=btn.textContent; btn.textContent=tr.copied; toast(tr.copied); setTimeout(()=>btn.textContent=o,1500); track("copy",null,value.slice(0,40)); }; try{ navigator.clipboard.writeText(value).then(done).catch(()=>fallbackCopy(value,done)); }catch(e){ fallbackCopy(value,done); } }
+function fallbackCopy(value, done){ const ta=h("textarea",{style:"position:fixed;opacity:0"},value); document.body.append(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){} ta.remove(); }
+function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1400); }
+function stepEl(tr, n, key, extra){ const st=tr.steps[key]; const body=h("div",{class:"body"}, h("h3",{},st.t), h("p",{},st.p)); if(extra) extra.forEach(x=>body.append(x)); if(SCREENS[key]) body.append(shot(SCREENS[key](tr.ui), st.cap)); return h("div",{class:"step"}, h("div",{class:"n"},n), body); }
+function renderResult(tr){
+  const path=computePath(); const a=state.a; const P=tr.paths[path.key];
+  const chips=h("div",{class:"chips"}, ["assistant","mcp","plan","editing","content"].filter(k=>a[k]).map(k=>{ const qk=questionKey(QUESTION_ORDER.indexOf(k)); const o=tr.q[qk].o.find(x=>x[0]===a[k]); return h("span",{class:"chip"}, o?o[1]:a[k]); }));
+  const verdict=h("div",{class:"verdict"}, h("div",{class:"eyebrow"},P.eyebrow), h("h2",{},P.title), h("p",{},P.lead), chips,
+    h("div",{class:"hero-row"}, h("a",{class:"btn btn-primary",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","verdict")},tr.signin,"→"), h("button",{type:"button",class:"btn btn-ghost",style:"color:var(--bg);border-color:#4C4A42",onclick:()=>{ state.screen="question"; state.qi=0; render(); }},tr.change)));
+  const BLOCKING=["claude_free","chatgpt_free"];
+  const blockNotes=path.notes.filter(n=>BLOCKING.includes(n)), otherNotes=path.notes.filter(n=>!BLOCKING.includes(n));
+  const sec=h("section",{class:"panel stack"});
+  blockNotes.forEach(n=>{ const [b,p]=tr.planNotes[n]; sec.append(h("div",{class:"note block"}, h("b",{},b), h("p",{},p))); });
+  sec.append(verdict);
+  if(a.mcp==="what"||a.mcp==="no") sec.append(h("div",{class:"note"}, h("b",{},tr.mcpExplainer.t), h("p",{},tr.mcpExplainer.p)));
+  otherNotes.forEach(n=>{ const [b,p]=tr.planNotes[n]; sec.append(h("div",{class:"note warn"}, h("b",{},b), h("p",{},p))); });
+  if(a.editing) sec.append(h("p",{class:"lead"}, tr.editingLine[a.editing]));
+  const steps=h("div",{class:"steps"}); let n=1;
+  const prompt=tr.prompts[a.content||"video_podcast"];
+  const promptBox=h("div",{class:"prompt"}, h("div",{class:"pl"},tr.firstPrompt), h("q",{},prompt), h("div",{}, h("button",{type:"button",class:"copy",onclick:(e)=>copyText(prompt,e.currentTarget,tr)},tr.copyPrompt)));
+  steps.append(stepEl(tr,n++,"signin"));
+  if(path.key==="claude"){
+    steps.append(stepEl(tr,n++,"claude_settings")); steps.append(stepEl(tr,n++,"claude_add",[codeBox(tr,CONFIG.mcpUrl)])); steps.append(stepEl(tr,n++,"oauth")); steps.append(stepEl(tr,n++,"claude_enable")); steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"first_prompt",[h("p",{},tr.tryIt),promptBox]));
+  } else if(path.key==="chatgpt"){
+    steps.append(stepEl(tr,n++,"gpt_dev")); steps.append(stepEl(tr,n++,"gpt_create",[codeBox(tr,CONFIG.mcpUrl)])); steps.append(stepEl(tr,n++,"oauth")); steps.append(stepEl(tr,n++,"gpt_enable")); steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"first_prompt",[h("p",{},tr.tryIt),promptBox]));
+  } else {
+    steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"editor_tour"));
+    if(path.alt==="claude"){ steps.append(stepEl(tr,n++,"claude_settings")); steps.append(stepEl(tr,n++,"claude_add",[codeBox(tr,CONFIG.mcpUrl)])); }
+  }
+  sec.append(steps);
+  sec.append(h("div",{class:"note",style:"margin-top:28px"}, h("b",{},tr.nextTitle), h("p",{},tr.summary[path.key])));
+  sec.append(h("div",{class:"hero-row",style:"margin-top:8px"}, h("a",{class:"btn btn-primary",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","bottom")},tr.signin,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.editorUrl,target:"_blank",rel:"noopener",onclick:()=>track("editor_click","bottom")},tr.openEditor), h("button",{type:"button",class:"linkbtn",onclick:()=>{ state.a={}; persist(); state.screen="intro"; state.qi=0; track("restart"); render(); }},tr.restart)));
+  return sec;
+}
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{ state.lang=b.dataset.lang; persist(); track("lang_change",null,state.lang); render(); }));
+render();
+track("page_view", null, state.lang);
+</script>
+
+</body>
+</html>
