@@ -98,6 +98,9 @@ p{margin:0}
 .step .body{display:grid;gap:12px;min-width:0}
 .step .body p{color:var(--muted);max-width:62ch}
 .step ul{margin:0;padding-left:20px;color:var(--muted);display:grid;gap:4px}
+.steplink{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:15px;text-decoration:none;transition:transform .12s,opacity .2s}
+.steplink:hover{opacity:.88}
+.steplink:active{transform:translateY(1px)}
 .ui{display:inline-block;border:1px solid var(--line-2);background:var(--surface);border-radius:6px;padding:0 7px;font-size:.92em;font-weight:600;color:var(--fg);white-space:nowrap}
 .code{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:10px 10px 10px 14px;font-family:var(--font-mono);font-size:14px;flex-wrap:wrap}
 .code code{flex:1;min-width:0;overflow-wrap:anywhere}
@@ -155,7 +158,11 @@ const CONFIG = {
   loginUrl: "https://targum.video/login",
   editorUrl: "https://targum.video/editor",
   mcpUrl: "https://targum.video/mcp",
-  claudeConnectorsDoc: "https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp"
+  claudeConnectorsDoc: "https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp",
+  claudeConnectorsUrl: "https://claude.ai/settings/connectors",
+  claudeNewChatUrl: "https://claude.ai/new",
+  chatgptConnectorsUrl: "https://chatgpt.com/#settings/Connectors",
+  chatgptNewChatUrl: "https://chatgpt.com/"
 };
 
 /* ---------- Copy (EN / ES) ---------- */
@@ -199,15 +206,15 @@ en:{
     unsure:["Not sure about your plan?","Open your assistant's settings and look for a Connectors section. If it's there, follow the steps. If not, start in the editor."]
   },
   steps:{
-    signin:{t:"Create your Targum account", p:"Sign in with Google. This is the same account you'll approve when the assistant asks for access.", cap:"targum.video/login"},
-    claude_settings:{t:"Open Connectors in Claude settings", p:"On the web or desktop app, open your profile menu, then Settings, then Connectors. Scroll to the bottom and click Add custom connector.", cap:"Settings › Connectors"},
+    signin:{t:"Create your Targum account", p:"Sign in with Google. This is the same account you'll approve when the assistant asks for access.", cap:"targum.video/login", link:{href:CONFIG.loginUrl, label:"Open targum.video/login"}},
+    claude_settings:{t:"Open Connectors in Claude settings", p:"On the web or desktop app, open your profile menu, then Settings, then Connectors. Scroll to the bottom and click Add custom connector.", cap:"Settings › Connectors", link:{href:CONFIG.claudeConnectorsUrl, label:"Open Claude › Settings › Connectors"}},
     claude_add:{t:"Paste the Targum server address", p:"In the dialog, enter the URL below as the remote MCP server URL. Leave Advanced settings alone; Targum uses OAuth, so there's no client ID or secret to enter. Click Add.", cap:"Add custom connector"},
     oauth:{t:"Approve access", p:"A Targum window opens. Sign in with Google and approve the permissions. By default the assistant can read, suggest and spend a little on analysis; it asks again before anything that uploads, renders or deletes.", cap:"Targum asks for your OK"},
-    claude_enable:{t:"Turn Targum on in a chat", p:"Start a new chat. Click the + button at the bottom left, choose Connectors, and switch on Targum. It stays on for that conversation.", cap:"+ › Connectors › Targum"},
-    gpt_dev:{t:"Turn on developer mode", p:"On chatgpt.com, open Settings, then Connectors (sometimes called Apps). Open Advanced settings and switch Developer mode on. Add connectors on the web first; the desktop and mobile apps pick them up afterwards.", cap:"Settings › Connectors › Advanced"},
-    gpt_create:{t:"Create the Targum connector", p:"Back in Connectors, click Create. Name it Targum, paste the server URL below, set authentication to OAuth, tick the trust box, then click Create.", cap:"Create connector"},
-    gpt_enable:{t:"Use it in a chat", p:"In a new chat, click +, then More, then Developer mode, and pick Targum. ChatGPT shows each tool call before it runs; confirm it.", cap:"+ › More › Developer mode"},
-    upload:{t:"Add your first recording", p:"Open the editor and drop in a video or audio file. Targum transcribes it; you can start editing as soon as the transcript is in, before the video finishes preparing. Note: YouTube links and live streams don't import. Download the file first.", cap:"targum.video/editor"},
+    claude_enable:{t:"Turn Targum on in a chat", p:"Start a new chat. Click the + button at the bottom left, choose Connectors, and switch on Targum. It stays on for that conversation.", cap:"+ › Connectors › Targum", link:{href:CONFIG.claudeNewChatUrl, label:"Open a new chat in Claude"}},
+    gpt_dev:{t:"Turn on developer mode", p:"On chatgpt.com, open Settings, then Connectors (sometimes called Apps). Open Advanced settings and switch Developer mode on. Add connectors on the web first; the desktop and mobile apps pick them up afterwards.", cap:"Settings › Connectors › Advanced", link:{href:CONFIG.chatgptConnectorsUrl, label:"Open ChatGPT › Settings › Connectors"}},
+    gpt_create:{t:"Create the Targum connector", p:"Back in Connectors, click Create. Name it Targum, paste the server URL below, set authentication to OAuth, tick the trust box, then click Create.", cap:"Create connector", link:{href:CONFIG.chatgptConnectorsUrl, label:"Open ChatGPT › Settings › Connectors"}},
+    gpt_enable:{t:"Use it in a chat", p:"In a new chat, click +, then More, then Developer mode, and pick Targum. ChatGPT shows each tool call before it runs; confirm it.", cap:"+ › More › Developer mode", link:{href:CONFIG.chatgptNewChatUrl, label:"Open a new chat in ChatGPT"}},
+    upload:{t:"Add your first recording", p:"Open the editor and drop in a video or audio file. Targum transcribes it; you can start editing as soon as the transcript is in, before the video finishes preparing. Note: YouTube links and live streams don't import. Download the file first.", cap:"targum.video/editor", link:{href:CONFIG.editorUrl, label:"Open the Targum editor"}},
     editor_tour:{t:"Try the three core moves", p:"Search the transcript for a topic, run Clean up to flag stutters and filler, and make a clip from any passage. Nothing is cut until you accept it.", cap:"The editor"},
     first_prompt:{t:"Say what you want", p:"Talk to the assistant in plain language. It finds the moments, proposes cuts and clips, and waits for your decision."}
   },
@@ -225,8 +232,6 @@ en:{
     demo:"Find each moment where the participant struggles, and make a 3-minute highlight of usability problems for the product team.",
     solo_creator:"Clean up my ums and false starts, then cut this into a tight version under 5 minutes and a 30-second teaser."
   },
-  allSet:"All set. What happens next", nextTitle:"Your path, in one line",
-  summary:{claude:"Sign in → add connector in Claude → approve → turn it on in a chat → upload → ask.", chatgpt:"Sign in → developer mode in ChatGPT → create connector → approve → pick it in a chat → upload → ask.", editor:"Sign in → upload a recording → search, clean up, clip → connect an assistant whenever you like."},
   help:"Stuck on a step?", helpLine:"Claude's connector guide", faq:"Targum FAQ", privacy:"Answers are stored anonymously to improve this guide.",
   ui:{settings:"Settings",connectors:"Connectors",addCustom:"Add custom connector",advanced:"Advanced settings",add:"Add",url:"Remote MCP server URL",googleSignin:"Continue with Google",allow:"Allow",chat:"New chat",enable:"Connectors",search:"Search and tools",devmode:"Developer mode",create:"Create",name:"Name",mcpUrl:"MCP server URL",auth:"Authentication: OAuth",trust:"I trust this application",more:"More",upload:"Drop a video or audio file",transcribing:"Transcribing…",ready:"Ready to work",cleanup:"Clean up",clip:"Make clip",searchT:"Search transcript"}
 },
@@ -269,15 +274,15 @@ es:{
     unsure:["¿No sabes qué plan tienes?","Abre los ajustes de tu asistente y busca una sección de Conectores. Si está, sigue los pasos. Si no, empieza en el editor."]
   },
   steps:{
-    signin:{t:"Crea tu cuenta de Targum", p:"Inicia sesión con Google. Es la misma cuenta que aprobarás cuando el asistente pida acceso.", cap:"targum.video/login"},
-    claude_settings:{t:"Abre Conectores en los ajustes de Claude", p:"En la web o la app de escritorio, abre el menú de tu perfil, luego Settings y después Connectors. Baja hasta el final y pulsa Add custom connector.", cap:"Settings › Connectors"},
+    signin:{t:"Crea tu cuenta de Targum", p:"Inicia sesión con Google. Es la misma cuenta que aprobarás cuando el asistente pida acceso.", cap:"targum.video/login", link:{href:CONFIG.loginUrl, label:"Abrir targum.video/login"}},
+    claude_settings:{t:"Abre Conectores en los ajustes de Claude", p:"En la web o la app de escritorio, abre el menú de tu perfil, luego Settings y después Connectors. Baja hasta el final y pulsa Add custom connector.", cap:"Settings › Connectors", link:{href:CONFIG.claudeConnectorsUrl, label:"Abrir Claude › Settings › Connectors"}},
     claude_add:{t:"Pega la dirección del servidor de Targum", p:"En el diálogo, introduce la URL de abajo como URL del servidor MCP remoto. No toques Advanced settings; Targum usa OAuth, así que no hay client ID ni secret. Pulsa Add.", cap:"Add custom connector"},
     oauth:{t:"Aprueba el acceso", p:"Se abre una ventana de Targum. Inicia sesión con Google y aprueba los permisos. Por defecto el asistente puede leer, sugerir y gastar un poco en análisis; vuelve a preguntar antes de subir, renderizar o borrar.", cap:"Targum pide tu aprobación"},
-    claude_enable:{t:"Activa Targum en un chat", p:"Abre un chat nuevo. Pulsa el botón + abajo a la izquierda, elige Connectors y activa Targum. Se queda activado para esa conversación.", cap:"+ › Connectors › Targum"},
-    gpt_dev:{t:"Activa el modo desarrollador", p:"En chatgpt.com, abre Settings y luego Connectors (a veces aparece como Apps). Entra en Advanced settings y activa Developer mode. Añade los conectores primero en la web; las apps de escritorio y móvil los recogen después.", cap:"Settings › Connectors › Advanced"},
-    gpt_create:{t:"Crea el conector de Targum", p:"De vuelta en Connectors, pulsa Create. Ponle el nombre Targum, pega la URL del servidor de abajo, elige autenticación OAuth, marca la casilla de confianza y pulsa Create.", cap:"Create connector"},
-    gpt_enable:{t:"Úsalo en un chat", p:"En un chat nuevo, pulsa +, luego More, después Developer mode y elige Targum. ChatGPT muestra cada llamada a herramienta antes de ejecutarla; confírmala.", cap:"+ › More › Developer mode"},
-    upload:{t:"Añade tu primera grabación", p:"Abre el editor y arrastra un archivo de vídeo o audio. Targum lo transcribe; puedes empezar a editar en cuanto esté la transcripción, antes de que termine de preparar el vídeo. Ojo: los enlaces de YouTube y los directos no se importan. Descarga el archivo primero.", cap:"targum.video/editor"},
+    claude_enable:{t:"Activa Targum en un chat", p:"Abre un chat nuevo. Pulsa el botón + abajo a la izquierda, elige Connectors y activa Targum. Se queda activado para esa conversación.", cap:"+ › Connectors › Targum", link:{href:CONFIG.claudeNewChatUrl, label:"Abrir un chat nuevo en Claude"}},
+    gpt_dev:{t:"Activa el modo desarrollador", p:"En chatgpt.com, abre Settings y luego Connectors (a veces aparece como Apps). Entra en Advanced settings y activa Developer mode. Añade los conectores primero en la web; las apps de escritorio y móvil los recogen después.", cap:"Settings › Connectors › Advanced", link:{href:CONFIG.chatgptConnectorsUrl, label:"Abrir ChatGPT › Settings › Connectors"}},
+    gpt_create:{t:"Crea el conector de Targum", p:"De vuelta en Connectors, pulsa Create. Ponle el nombre Targum, pega la URL del servidor de abajo, elige autenticación OAuth, marca la casilla de confianza y pulsa Create.", cap:"Create connector", link:{href:CONFIG.chatgptConnectorsUrl, label:"Abrir ChatGPT › Settings › Connectors"}},
+    gpt_enable:{t:"Úsalo en un chat", p:"En un chat nuevo, pulsa +, luego More, después Developer mode y elige Targum. ChatGPT muestra cada llamada a herramienta antes de ejecutarla; confírmala.", cap:"+ › More › Developer mode", link:{href:CONFIG.chatgptNewChatUrl, label:"Abrir un chat nuevo en ChatGPT"}},
+    upload:{t:"Añade tu primera grabación", p:"Abre el editor y arrastra un archivo de vídeo o audio. Targum lo transcribe; puedes empezar a editar en cuanto esté la transcripción, antes de que termine de preparar el vídeo. Ojo: los enlaces de YouTube y los directos no se importan. Descarga el archivo primero.", cap:"targum.video/editor", link:{href:CONFIG.editorUrl, label:"Abrir el editor de Targum"}},
     editor_tour:{t:"Prueba los tres movimientos básicos", p:"Busca un tema en la transcripción, ejecuta Clean up para marcar tartamudeos y muletillas, y haz un clip de cualquier pasaje. No se corta nada hasta que lo aceptes.", cap:"El editor"},
     first_prompt:{t:"Di lo que quieres", p:"Habla con el asistente en lenguaje natural. Encuentra los momentos, propone cortes y clips, y espera tu decisión."}
   },
@@ -295,8 +300,6 @@ es:{
     demo:"Encuentra cada momento en que el participante se atasca y haz un resumen de 3 minutos de problemas de usabilidad para el equipo de producto.",
     solo_creator:"Limpia mis muletillas y falsos arranques, y deja una versión ajustada de menos de 5 minutos y un teaser de 30 segundos."
   },
-  allSet:"Listo. Qué viene después", nextTitle:"Tu ruta, en una línea",
-  summary:{claude:"Inicia sesión → añade el conector en Claude → aprueba → actívalo en un chat → sube → pide.", chatgpt:"Inicia sesión → modo desarrollador en ChatGPT → crea el conector → aprueba → elígelo en un chat → sube → pide.", editor:"Inicia sesión → sube una grabación → busca, limpia, recorta → conecta un asistente cuando quieras."},
   help:"¿Atascado en un paso?", helpLine:"Guía de conectores de Claude", faq:"FAQ de Targum", privacy:"Las respuestas se guardan de forma anónima para mejorar esta guía.",
   ui:{settings:"Settings",connectors:"Connectors",addCustom:"Add custom connector",advanced:"Advanced settings",add:"Add",url:"Remote MCP server URL",googleSignin:"Continuar con Google",allow:"Permitir",chat:"Chat nuevo",enable:"Connectors",search:"Search and tools",devmode:"Developer mode",create:"Create",name:"Name",mcpUrl:"MCP server URL",auth:"Authentication: OAuth",trust:"I trust this application",more:"More",upload:"Suelta un archivo de vídeo o audio",transcribing:"Transcribiendo…",ready:"Listo para trabajar",cleanup:"Clean up",clip:"Make clip",searchT:"Buscar en la transcripción"}
 }};
@@ -431,7 +434,7 @@ function codeBox(tr, value){ return h("div",{class:"code"}, h("code",{},value), 
 function copyText(value, btn, tr){ const done=()=>{ const o=btn.textContent; btn.textContent=tr.copied; toast(tr.copied); setTimeout(()=>btn.textContent=o,1500); track("copy",null,value.slice(0,40)); }; try{ navigator.clipboard.writeText(value).then(done).catch(()=>fallbackCopy(value,done)); }catch(e){ fallbackCopy(value,done); } }
 function fallbackCopy(value, done){ const ta=h("textarea",{style:"position:fixed;opacity:0"},value); document.body.append(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){} ta.remove(); }
 function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1400); }
-function stepEl(tr, n, key, extra){ const st=tr.steps[key]; const body=h("div",{class:"body"}, h("h3",{},st.t), h("p",{},st.p)); if(extra) extra.forEach(x=>body.append(x)); if(SCREENS[key]) body.append(shot(SCREENS[key](tr.ui), st.cap)); return h("div",{class:"step"}, h("div",{class:"n"},n), body); }
+function stepEl(tr, n, key, extra){ const st=tr.steps[key]; const body=h("div",{class:"body"}, h("h3",{},st.t), h("p",{},st.p)); if(st.link) body.append(h("a",{class:"steplink",href:st.link.href,target:"_blank",rel:"noopener",onclick:()=>track("step_link_click",key)},st.link.label,"↗")); if(extra) extra.forEach(x=>body.append(x)); if(SCREENS[key]) body.append(shot(SCREENS[key](tr.ui), st.cap)); return h("div",{class:"step"}, h("div",{class:"n"},n), body); }
 function renderResult(tr){
   const path=computePath(); const a=state.a; const P=tr.paths[path.key];
   const chips=h("div",{class:"chips"}, ["assistant","mcp","plan","editing","content"].filter(k=>a[k]).map(k=>{ const qk=questionKey(QUESTION_ORDER.indexOf(k)); const o=tr.q[qk].o.find(x=>x[0]===a[k]); return h("span",{class:"chip"}, o?o[1]:a[k]); }));
@@ -458,8 +461,7 @@ function renderResult(tr){
     if(path.alt==="claude"){ steps.append(stepEl(tr,n++,"claude_settings")); steps.append(stepEl(tr,n++,"claude_add",[codeBox(tr,CONFIG.mcpUrl)])); }
   }
   sec.append(steps);
-  sec.append(h("div",{class:"note",style:"margin-top:28px"}, h("b",{},tr.nextTitle), h("p",{},tr.summary[path.key])));
-  sec.append(h("div",{class:"hero-row",style:"margin-top:8px"}, h("a",{class:"btn btn-primary",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","bottom")},tr.signin,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.editorUrl,target:"_blank",rel:"noopener",onclick:()=>track("editor_click","bottom")},tr.openEditor), h("button",{type:"button",class:"linkbtn",onclick:()=>{ state.a={}; persist(); state.screen="intro"; state.qi=0; track("restart"); render(); }},tr.restart)));
+  sec.append(h("div",{class:"hero-row",style:"margin-top:28px"}, h("a",{class:"btn btn-primary",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","bottom")},tr.signin,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.editorUrl,target:"_blank",rel:"noopener",onclick:()=>track("editor_click","bottom")},tr.openEditor), h("button",{type:"button",class:"linkbtn",onclick:()=>{ state.a={}; persist(); state.screen="intro"; state.qi=0; track("restart"); render(); }},tr.restart)));
   return sec;
 }
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{ state.lang=b.dataset.lang; persist(); track("lang_change",null,state.lang); render(); }));
