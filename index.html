@@ -19,7 +19,6 @@
   --bg:#FFFDF5; --surface:#FFFFFF; --line:#E9E4CF; --line-2:#D6D0B3;
   --fg:var(--ink); --muted:var(--ink-2); --faint:var(--ink-3);
   --ok:#1F7A4D; --warn:#A8600A;
-  --screen-bg:#F6F4EA; --screen-chrome:#FFFFFF; --screen-line:#DAD6C4; --screen-ink:#2A2924; --screen-dim:#B7B3A2;
   --font-display:"Bricolage Grotesque","Avenir Next Condensed","Arial Narrow",sans-serif;
   --font-body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
   --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -124,24 +123,7 @@ p{margin:0}
 .toast.show{opacity:1}
 
 /* Illustrated screens */
-.shot{position:relative;background:var(--screen-bg);border:1px solid var(--line-2);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);max-width:100%}
-.shot svg{display:block;width:100%;height:auto;font-family:var(--font-body)}
-.shot .cap{position:absolute;left:10px;bottom:10px;background:var(--ink);color:var(--bg);font-size:12px;padding:4px 9px;border-radius:999px;font-weight:600;opacity:.92}
-.shot .ring{animation:ring 2.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
-@keyframes ring{0%,100%{opacity:.35;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
-.shot .cursor{animation:cur 2.4s ease-in-out infinite}
-@keyframes cur{0%{transform:translate(-70px,50px);opacity:0}25%{opacity:1}55%,100%{transform:translate(0,0);opacity:1}}
-.shot .typing{animation:typing 2.8s steps(28) infinite}
-@keyframes typing{0%,15%{clip-path:inset(0 100% 0 0)}75%,100%{clip-path:inset(0 0 0 0)}}
-.shot .blink{animation:blink 1s steps(2) infinite}
-@keyframes blink{to{opacity:0}}
-.shot .toggle-knob{animation:knob 2.4s ease-in-out infinite}
-@keyframes knob{0%,40%{transform:translateX(0)}60%,100%{transform:translateX(14px)}}
-.shot .toggle-track{animation:track 2.4s ease-in-out infinite}
-@keyframes track{0%,40%{fill:var(--screen-dim)}60%,100%{fill:var(--ok)}}
-.shot .appear{animation:appear 2.4s ease-in-out infinite}
-@keyframes appear{0%,45%{opacity:0;transform:translateY(6px)}60%,100%{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.shot *{animation:none!important}.shot .typing{clip-path:none}.shot .toggle-knob{transform:translateX(14px)}.shot .toggle-track{fill:var(--ok)}.shot .appear{opacity:1}.panel{animation:none}}
+@media (prefers-reduced-motion:reduce){.panel{animation:none}}
 @media (max-width:560px){.step{grid-template-columns:40px 1fr}.step .n{width:34px;height:34px;font-size:16px;border-radius:9px}body{font-size:16px}}
 </style>
 
@@ -216,16 +198,16 @@ en:{
     unsure:["Not sure about your plan?","Open your assistant's settings and look for a Connectors section. If it's there, follow the steps. If not, start in the editor."]
   },
   steps:{
-    signin:{t:"Create your Targum account", p:"Sign in with Google. This is the same account you'll approve when the assistant asks for access.", cap:"targum.video/login", link:{href:CONFIG.loginUrl, label:"Open targum.video/login"}},
-    claude_settings:{t:"Open Connectors in Claude settings", p:"On the web or desktop app, open your profile menu, then Settings, then Connectors. Scroll to the bottom and click Add custom connector.", cap:"Settings › Connectors", link:{href:CONFIG.claudeConnectorsUrl, label:"Open Claude › Settings › Connectors"}},
-    claude_add:{t:"Paste the Targum server address", p:"In the dialog, enter the URL below as the remote MCP server URL. Leave Advanced settings alone; Targum uses OAuth, so there's no client ID or secret to enter. Click Add.", cap:"Add custom connector"},
-    oauth:{t:"Approve access", p:"A Targum window opens. Sign in with Google and approve the permissions. By default the assistant can read, suggest and spend a little on analysis; it asks again before anything that uploads, renders or deletes.", cap:"Targum asks for your OK"},
-    claude_enable:{t:"Turn Targum on in a chat", p:"Start a new chat. Click the + button at the bottom left, choose Connectors, and switch on Targum. It stays on for that conversation.", cap:"+ › Connectors › Targum", link:{href:CONFIG.claudeNewChatUrl, label:"Open a new chat in Claude"}},
-    gpt_dev:{t:"Turn on developer mode", p:"On chatgpt.com, open Settings, then Connectors (sometimes called Apps). Open Advanced settings and switch Developer mode on. Add connectors on the web first; the desktop and mobile apps pick them up afterwards.", cap:"Settings › Connectors › Advanced", link:{href:CONFIG.chatgptConnectorsUrl, label:"Open ChatGPT › Settings › Connectors"}},
-    gpt_create:{t:"Create the Targum connector", p:"Back in Connectors, click Create. Name it Targum, paste the server URL below, set authentication to OAuth, tick the trust box, then click Create.", cap:"Create connector", link:{href:CONFIG.chatgptConnectorsUrl, label:"Open ChatGPT › Settings › Connectors"}},
-    gpt_enable:{t:"Use it in a chat", p:"In a new chat, click +, then More, then Developer mode, and pick Targum. ChatGPT shows each tool call before it runs; confirm it.", cap:"+ › More › Developer mode", link:{href:CONFIG.chatgptNewChatUrl, label:"Open a new chat in ChatGPT"}},
-    upload:{t:"Add your first recording", p:"Open the editor and drop in a video or audio file. Targum transcribes it; you can start editing as soon as the transcript is in, before the video finishes preparing. Note: YouTube links and live streams don't import. Download the file first.", cap:"targum.video/editor", link:{href:CONFIG.editorUrl, label:"Open the Targum editor"}},
-    editor_tour:{t:"Try the three core moves", p:"Search the transcript for a topic, run Clean up to flag stutters and filler, and make a clip from any passage. Nothing is cut until you accept it.", cap:"The editor"},
+    signin:{t:"Create your Targum account", p:"Sign in with Google. This is the same account you'll approve when the assistant asks for access.", link:{href:CONFIG.loginUrl, label:"Open targum.video/login"}},
+    claude_settings:{t:"Open Connectors in Claude settings", p:"On the web or desktop app, open your profile menu, then Settings, then Connectors. Scroll to the bottom and click Add custom connector.", link:{href:CONFIG.claudeConnectorsUrl, label:"Open Claude › Settings › Connectors"}},
+    claude_add:{t:"Paste the Targum server address", p:"In the dialog, enter the URL below as the remote MCP server URL. Leave Advanced settings alone; Targum uses OAuth, so there's no client ID or secret to enter. Click Add."},
+    oauth:{t:"Approve access", p:"A Targum window opens. Sign in with Google and approve the permissions. By default the assistant can read, suggest and spend a little on analysis; it asks again before anything that uploads, renders or deletes."},
+    claude_enable:{t:"Turn Targum on in a chat", p:"Start a new chat. Click the + button at the bottom left, choose Connectors, and switch on Targum. It stays on for that conversation.", link:{href:CONFIG.claudeNewChatUrl, label:"Open a new chat in Claude"}},
+    gpt_dev:{t:"Turn on developer mode", p:"On chatgpt.com, open Settings, then Connectors (sometimes called Apps). Open Advanced settings and switch Developer mode on. Add connectors on the web first; the desktop and mobile apps pick them up afterwards.", link:{href:CONFIG.chatgptConnectorsUrl, label:"Open ChatGPT › Settings › Connectors"}},
+    gpt_create:{t:"Create the Targum connector", p:"Back in Connectors, click Create. Name it Targum, paste the server URL below, set authentication to OAuth, tick the trust box, then click Create.", link:{href:CONFIG.chatgptConnectorsUrl, label:"Open ChatGPT › Settings › Connectors"}},
+    gpt_enable:{t:"Use it in a chat", p:"In a new chat, click +, then More, then Developer mode, and pick Targum. ChatGPT shows each tool call before it runs; confirm it.", link:{href:CONFIG.chatgptNewChatUrl, label:"Open a new chat in ChatGPT"}},
+    upload:{t:"Add your first recording", p:"Open the editor and drop in a video or audio file. Targum transcribes it; you can start editing as soon as the transcript is in, before the video finishes preparing. Note: YouTube links and live streams don't import. Download the file first.", link:{href:CONFIG.editorUrl, label:"Open the Targum editor"}},
+    editor_tour:{t:"Try the three core moves", p:"Search the transcript for a topic, run Clean up to flag stutters and filler, and make a clip from any passage. Nothing is cut until you accept it."},
     first_prompt:{t:"Say what you want", p:"Talk to the assistant in plain language. It finds the moments, proposes cuts and clips, and waits for your decision."}
   },
   editingLine:{
@@ -243,7 +225,6 @@ en:{
     solo_creator:"Clean up my ums and false starts, then cut this into a tight version under 5 minutes and a 30-second teaser."
   },
   help:"Stuck on a step?", helpLine:"Claude's connector guide", faq:"Targum FAQ", privacy:"Answers are stored anonymously to improve this guide.",
-  ui:{settings:"Settings",connectors:"Connectors",addCustom:"Add custom connector",advanced:"Advanced settings",add:"Add",url:"Remote MCP server URL",googleSignin:"Continue with Google",allow:"Allow",chat:"New chat",enable:"Connectors",search:"Search and tools",devmode:"Developer mode",create:"Create",name:"Name",mcpUrl:"MCP server URL",auth:"Authentication: OAuth",trust:"I trust this application",more:"More",upload:"Drop a video or audio file",transcribing:"Transcribing…",ready:"Ready to work",cleanup:"Clean up",clip:"Make clip",searchT:"Search transcript"}
 },
 es:{
   stepOf:(i,n)=>`Pregunta ${i} de ${n}`, intro:"Antes de empezar", result:"Tu ruta de configuración",
@@ -284,16 +265,16 @@ es:{
     unsure:["¿No sabes qué plan tienes?","Abre los ajustes de tu asistente y busca una sección de Conectores. Si está, sigue los pasos. Si no, empieza en el editor."]
   },
   steps:{
-    signin:{t:"Crea tu cuenta de Targum", p:"Inicia sesión con Google. Es la misma cuenta que aprobarás cuando el asistente pida acceso.", cap:"targum.video/login", link:{href:CONFIG.loginUrl, label:"Abrir targum.video/login"}},
-    claude_settings:{t:"Abre Conectores en los ajustes de Claude", p:"En la web o la app de escritorio, abre el menú de tu perfil, luego Settings y después Connectors. Baja hasta el final y pulsa Add custom connector.", cap:"Settings › Connectors", link:{href:CONFIG.claudeConnectorsUrl, label:"Abrir Claude › Settings › Connectors"}},
-    claude_add:{t:"Pega la dirección del servidor de Targum", p:"En el diálogo, introduce la URL de abajo como URL del servidor MCP remoto. No toques Advanced settings; Targum usa OAuth, así que no hay client ID ni secret. Pulsa Add.", cap:"Add custom connector"},
-    oauth:{t:"Aprueba el acceso", p:"Se abre una ventana de Targum. Inicia sesión con Google y aprueba los permisos. Por defecto el asistente puede leer, sugerir y gastar un poco en análisis; vuelve a preguntar antes de subir, renderizar o borrar.", cap:"Targum pide tu aprobación"},
-    claude_enable:{t:"Activa Targum en un chat", p:"Abre un chat nuevo. Pulsa el botón + abajo a la izquierda, elige Connectors y activa Targum. Se queda activado para esa conversación.", cap:"+ › Connectors › Targum", link:{href:CONFIG.claudeNewChatUrl, label:"Abrir un chat nuevo en Claude"}},
-    gpt_dev:{t:"Activa el modo desarrollador", p:"En chatgpt.com, abre Settings y luego Connectors (a veces aparece como Apps). Entra en Advanced settings y activa Developer mode. Añade los conectores primero en la web; las apps de escritorio y móvil los recogen después.", cap:"Settings › Connectors › Advanced", link:{href:CONFIG.chatgptConnectorsUrl, label:"Abrir ChatGPT › Settings › Connectors"}},
-    gpt_create:{t:"Crea el conector de Targum", p:"De vuelta en Connectors, pulsa Create. Ponle el nombre Targum, pega la URL del servidor de abajo, elige autenticación OAuth, marca la casilla de confianza y pulsa Create.", cap:"Create connector", link:{href:CONFIG.chatgptConnectorsUrl, label:"Abrir ChatGPT › Settings › Connectors"}},
-    gpt_enable:{t:"Úsalo en un chat", p:"En un chat nuevo, pulsa +, luego More, después Developer mode y elige Targum. ChatGPT muestra cada llamada a herramienta antes de ejecutarla; confírmala.", cap:"+ › More › Developer mode", link:{href:CONFIG.chatgptNewChatUrl, label:"Abrir un chat nuevo en ChatGPT"}},
-    upload:{t:"Añade tu primera grabación", p:"Abre el editor y arrastra un archivo de vídeo o audio. Targum lo transcribe; puedes empezar a editar en cuanto esté la transcripción, antes de que termine de preparar el vídeo. Ojo: los enlaces de YouTube y los directos no se importan. Descarga el archivo primero.", cap:"targum.video/editor", link:{href:CONFIG.editorUrl, label:"Abrir el editor de Targum"}},
-    editor_tour:{t:"Prueba los tres movimientos básicos", p:"Busca un tema en la transcripción, ejecuta Clean up para marcar tartamudeos y muletillas, y haz un clip de cualquier pasaje. No se corta nada hasta que lo aceptes.", cap:"El editor"},
+    signin:{t:"Crea tu cuenta de Targum", p:"Inicia sesión con Google. Es la misma cuenta que aprobarás cuando el asistente pida acceso.", link:{href:CONFIG.loginUrl, label:"Abrir targum.video/login"}},
+    claude_settings:{t:"Abre Conectores en los ajustes de Claude", p:"En la web o la app de escritorio, abre el menú de tu perfil, luego Settings y después Connectors. Baja hasta el final y pulsa Add custom connector.", link:{href:CONFIG.claudeConnectorsUrl, label:"Abrir Claude › Settings › Connectors"}},
+    claude_add:{t:"Pega la dirección del servidor de Targum", p:"En el diálogo, introduce la URL de abajo como URL del servidor MCP remoto. No toques Advanced settings; Targum usa OAuth, así que no hay client ID ni secret. Pulsa Add."},
+    oauth:{t:"Aprueba el acceso", p:"Se abre una ventana de Targum. Inicia sesión con Google y aprueba los permisos. Por defecto el asistente puede leer, sugerir y gastar un poco en análisis; vuelve a preguntar antes de subir, renderizar o borrar."},
+    claude_enable:{t:"Activa Targum en un chat", p:"Abre un chat nuevo. Pulsa el botón + abajo a la izquierda, elige Connectors y activa Targum. Se queda activado para esa conversación.", link:{href:CONFIG.claudeNewChatUrl, label:"Abrir un chat nuevo en Claude"}},
+    gpt_dev:{t:"Activa el modo desarrollador", p:"En chatgpt.com, abre Settings y luego Connectors (a veces aparece como Apps). Entra en Advanced settings y activa Developer mode. Añade los conectores primero en la web; las apps de escritorio y móvil los recogen después.", link:{href:CONFIG.chatgptConnectorsUrl, label:"Abrir ChatGPT › Settings › Connectors"}},
+    gpt_create:{t:"Crea el conector de Targum", p:"De vuelta en Connectors, pulsa Create. Ponle el nombre Targum, pega la URL del servidor de abajo, elige autenticación OAuth, marca la casilla de confianza y pulsa Create.", link:{href:CONFIG.chatgptConnectorsUrl, label:"Abrir ChatGPT › Settings › Connectors"}},
+    gpt_enable:{t:"Úsalo en un chat", p:"En un chat nuevo, pulsa +, luego More, después Developer mode y elige Targum. ChatGPT muestra cada llamada a herramienta antes de ejecutarla; confírmala.", link:{href:CONFIG.chatgptNewChatUrl, label:"Abrir un chat nuevo en ChatGPT"}},
+    upload:{t:"Añade tu primera grabación", p:"Abre el editor y arrastra un archivo de vídeo o audio. Targum lo transcribe; puedes empezar a editar en cuanto esté la transcripción, antes de que termine de preparar el vídeo. Ojo: los enlaces de YouTube y los directos no se importan. Descarga el archivo primero.", link:{href:CONFIG.editorUrl, label:"Abrir el editor de Targum"}},
+    editor_tour:{t:"Prueba los tres movimientos básicos", p:"Busca un tema en la transcripción, ejecuta Clean up para marcar tartamudeos y muletillas, y haz un clip de cualquier pasaje. No se corta nada hasta que lo aceptes."},
     first_prompt:{t:"Di lo que quieres", p:"Habla con el asistente en lenguaje natural. Encuentra los momentos, propone cortes y clips, y espera tu decisión."}
   },
   editingLine:{
@@ -311,7 +292,6 @@ es:{
     solo_creator:"Limpia mis muletillas y falsos arranques, y deja una versión ajustada de menos de 5 minutos y un teaser de 30 segundos."
   },
   help:"¿Atascado en un paso?", helpLine:"Guía de conectores de Claude", faq:"FAQ de Targum", privacy:"Las respuestas se guardan de forma anónima para mejorar esta guía.",
-  ui:{settings:"Settings",connectors:"Connectors",addCustom:"Add custom connector",advanced:"Advanced settings",add:"Add",url:"Remote MCP server URL",googleSignin:"Continuar con Google",allow:"Permitir",chat:"Chat nuevo",enable:"Connectors",search:"Search and tools",devmode:"Developer mode",create:"Create",name:"Name",mcpUrl:"MCP server URL",auth:"Authentication: OAuth",trust:"I trust this application",more:"More",upload:"Suelta un archivo de vídeo o audio",transcribing:"Transcribiendo…",ready:"Listo para trabajar",cleanup:"Clean up",clip:"Make clip",searchT:"Buscar en la transcripción"}
 }};
 
 /* ---------- State ---------- */
@@ -365,55 +345,6 @@ function computePath(){
 function questionKey(i){ const k=QUESTION_ORDER[i]; if(k!=="plan") return k; const asst=state.a.assistant; if(asst==="chatgpt") return "plan_chatgpt"; return "plan_claude"; }
 function activeQuestions(){ return QUESTION_ORDER.filter(k=>!(k==="plan" && (state.a.assistant==="none"||!state.a.assistant))); }
 
-/* ---------- Illustrated screens ---------- */
-const NS="http://www.w3.org/2000/svg";
-function s(tag, attrs={}, ...kids){ const el=document.createElementNS(NS,tag); for(const [k,v] of Object.entries(attrs)) el.setAttribute(k,v); for(const k of kids.flat()){ if(k==null) continue; el.append(typeof k==="string"?document.createTextNode(k):k);} return el; }
-function frame(w=640,h=380){ const svg=s("svg",{viewBox:`0 0 ${w} ${h}`,role:"img"}); svg.append(s("rect",{x:0,y:0,width:w,height:h,fill:"var(--screen-bg)"}));
-  svg.append(s("rect",{x:0,y:0,width:w,height:28,fill:"var(--screen-chrome)"})); [14,32,50].forEach(cx=>svg.append(s("circle",{cx,cy:14,r:5,fill:"var(--screen-line)"}))); return svg; }
-function txt(x,y,str,o={}){ return s("text",{x,y,fill:o.fill||"var(--screen-ink)","font-size":o.size||13,"font-weight":o.w||500,"font-family":o.mono?"var(--font-mono)":"var(--font-body)",...(o.anchor?{"text-anchor":o.anchor}:{})},str); }
-function rect(x,y,w,hh,o={}){ return s("rect",{x,y,width:w,height:hh,rx:o.rx??6,fill:o.fill||"var(--screen-chrome)",stroke:o.stroke||"none","stroke-width":o.sw||1}); }
-function ring(x,y,w,hh){ return s("rect",{x:x-5,y:y-5,width:w+10,height:hh+10,rx:10,fill:"none",stroke:"var(--yellow-deep)","stroke-width":3,class:"ring"}); }
-function cursor(x,y){ const g=s("g",{class:"cursor",transform:`translate(0,0)`}); const p=s("path",{d:`M${x} ${y} l0 18 l5 -4 l4 8 l4 -2 l-4 -8 l6 0 z`,fill:"#141311",stroke:"#fff","stroke-width":1.5}); g.append(p); return g; }
-function sidebar(svg, items, active){ svg.append(rect(0,28,170,352,{rx:0,fill:"var(--screen-chrome)"})); items.forEach((it,i)=>{ const y=58+i*30; if(i===active) svg.append(rect(10,y-17,150,26,{rx:6,fill:"var(--screen-bg)"})); svg.append(txt(22,y,it,{fill:i===active?"var(--screen-ink)":"var(--screen-dim)",w:i===active?600:500})); }); }
-function shot(svg, cap){ const d=h("div",{class:"shot"}); d.append(svg); if(cap) d.append(h("span",{class:"cap"},cap)); return d; }
-
-const SCREENS = {
-  signin(u){ const svg=frame(); svg.append(rect(190,90,260,210,{rx:16,stroke:"var(--screen-line)"})); svg.append(rect(300,112,40,40,{rx:10,fill:"var(--yellow)"})); svg.append(txt(320,139,"T",{size:22,w:800,anchor:"middle",fill:"#141311"}));
-    svg.append(txt(320,182,"Sign in to Targum",{size:16,w:700,anchor:"middle"})); svg.append(rect(214,206,212,40,{rx:10,fill:"var(--screen-bg)",stroke:"var(--screen-line)"})); svg.append(txt(320,231,u.googleSignin,{anchor:"middle",w:600})); svg.append(ring(214,206,212,40)); svg.append(cursor(380,236)); return svg; },
-  claude_settings(u){ const svg=frame(); sidebar(svg,["General","Profile","Appearance",u.connectors,"Billing"],3); svg.append(txt(200,66,u.connectors,{size:18,w:700}));
-    ["Google Drive","Gmail","Slack"].forEach((n,i)=>{ const y=92+i*44; svg.append(rect(196,y,420,36,{stroke:"var(--screen-line)"})); svg.append(s("circle",{cx:216,cy:y+18,r:8,fill:"var(--screen-dim)"})); svg.append(txt(234,y+23,n)); svg.append(txt(596,y+23,"Connected",{fill:"var(--screen-dim)",anchor:"end",size:12})); });
-    svg.append(rect(196,250,420,0.5,{fill:"var(--screen-line)"})); svg.append(rect(196,268,190,36,{rx:8,fill:"var(--screen-chrome)",stroke:"var(--screen-line)"})); svg.append(txt(291,291,"+ "+u.addCustom,{anchor:"middle",w:600})); svg.append(ring(196,268,190,36)); svg.append(cursor(360,296)); return svg; },
-  claude_add(u){ const svg=frame(); svg.append(rect(0,28,640,352,{rx:0,fill:"var(--screen-bg)"})); svg.append(rect(130,70,380,250,{rx:14,stroke:"var(--screen-line)"})); svg.append(txt(152,100,u.addCustom,{size:16,w:700}));
-    svg.append(txt(152,132,"Name",{size:12,fill:"var(--screen-dim)"})); svg.append(rect(152,140,336,30,{stroke:"var(--screen-line)",fill:"var(--screen-bg)"})); svg.append(txt(164,160,"Targum"));
-    svg.append(txt(152,194,u.url,{size:12,fill:"var(--screen-dim)"})); svg.append(rect(152,202,336,30,{stroke:"var(--screen-line)",fill:"var(--screen-bg)"})); const ty=txt(164,222,CONFIG.mcpUrl,{mono:true,size:12}); ty.setAttribute("class","typing"); svg.append(ty); svg.append(ring(152,202,336,30));
-    svg.append(txt(152,256,"▸ "+u.advanced,{size:12,fill:"var(--screen-dim)"})); svg.append(rect(420,278,68,30,{rx:8,fill:"#141311"})); svg.append(txt(454,298,u.add,{fill:"#fff",anchor:"middle",w:600})); svg.append(cursor(470,300)); return svg; },
-  oauth(u){ const svg=frame(); svg.append(rect(170,60,300,280,{rx:16,stroke:"var(--screen-line)"})); svg.append(rect(300,80,40,40,{rx:10,fill:"var(--yellow)"})); svg.append(txt(320,107,"T",{size:22,w:800,anchor:"middle",fill:"#141311"}));
-    svg.append(txt(320,146,"Claude wants to use Targum",{size:14,w:700,anchor:"middle"})); ["read your projects and transcripts","suggest cuts and clips","spend a little on analysis"].forEach((l,i)=>{ svg.append(s("circle",{cx:200,cy:174+i*24,r:4,fill:"var(--ok)"})); svg.append(txt(212,178+i*24,l,{size:12,fill:"var(--screen-ink)"})); });
-    svg.append(rect(194,262,252,36,{rx:10,fill:"var(--yellow)"})); svg.append(txt(320,285,u.allow,{anchor:"middle",w:700,fill:"#141311"})); svg.append(ring(194,262,252,36)); svg.append(cursor(400,290)); return svg; },
-  claude_enable(u){ const svg=frame(); svg.append(txt(320,150,u.chat,{size:22,w:700,anchor:"middle",fill:"var(--screen-dim)"})); svg.append(rect(80,290,480,56,{rx:16,stroke:"var(--screen-line)"})); svg.append(s("circle",{cx:108,cy:318,r:12,fill:"var(--screen-bg)",stroke:"var(--screen-line)"})); svg.append(txt(108,323,"+",{anchor:"middle",w:700}));
-    const menu=s("g",{class:"appear"}); menu.append(rect(90,170,220,110,{rx:12,stroke:"var(--screen-line)"})); menu.append(txt(106,194,"Add files",{size:12,fill:"var(--screen-dim)"})); menu.append(txt(106,220,u.enable,{size:12,w:600})); menu.append(txt(106,248,"Targum",{size:12,w:600}));
-    const tr=s("rect",{x:262,y:238,width:30,height:16,rx:8,class:"toggle-track",fill:"var(--screen-dim)"}); const kn=s("circle",{cx:270,cy:246,r:6,fill:"#fff",class:"toggle-knob"}); menu.append(tr,kn); menu.append(ring(100,232,200,28)); svg.append(menu); svg.append(cursor(280,252)); return svg; },
-  gpt_dev(u){ const svg=frame(); sidebar(svg,["General","Notifications","Personalization",u.connectors,"Security"],3); svg.append(txt(200,66,u.connectors,{size:18,w:700}));
-    svg.append(rect(196,86,420,0.5,{fill:"var(--screen-line)"})); svg.append(txt(200,116,u.advanced,{w:600})); svg.append(txt(200,134,"Developer tools and custom MCP servers",{size:11,fill:"var(--screen-dim)"}));
-    svg.append(txt(200,176,u.devmode,{w:600})); svg.append(txt(200,194,"Beta. Enables unverified connectors with full MCP tool access.",{size:11,fill:"var(--screen-dim)"}));
-    const tr=s("rect",{x:566,y:166,width:34,height:18,rx:9,class:"toggle-track",fill:"var(--screen-dim)"}); const kn=s("circle",{cx:575,cy:175,r:7,fill:"#fff",class:"toggle-knob"}); svg.append(tr,kn); svg.append(ring(560,160,46,30)); svg.append(cursor(590,186)); return svg; },
-  gpt_create(u){ const svg=frame(); svg.append(rect(130,46,380,300,{rx:14,stroke:"var(--screen-line)"})); svg.append(txt(152,74,"New connector",{size:16,w:700}));
-    const row=(y,l,v,mono)=>{ svg.append(txt(152,y,l,{size:11,fill:"var(--screen-dim)"})); svg.append(rect(152,y+6,336,26,{stroke:"var(--screen-line)",fill:"var(--screen-bg)"})); const tx=txt(162,y+23,v,{size:12,mono}); return tx; };
-    svg.append(row(96,u.name,"Targum")); const ty=row(140,u.mcpUrl,CONFIG.mcpUrl,true); ty.setAttribute("class","typing"); svg.append(ty); svg.append(ring(152,146,336,26));
-    svg.append(txt(152,202,u.auth,{size:12,w:600})); svg.append(rect(152,218,14,14,{rx:3,stroke:"var(--screen-line)",fill:"var(--yellow)"})); svg.append(txt(158,229,"✓",{size:11,fill:"#141311",anchor:"middle",w:800})); svg.append(txt(174,229,u.trust,{size:12}));
-    svg.append(rect(410,298,78,30,{rx:8,fill:"#141311"})); svg.append(txt(449,318,u.create,{fill:"#fff",anchor:"middle",w:600})); svg.append(cursor(466,322)); return svg; },
-  gpt_enable(u){ const svg=frame(); svg.append(txt(320,120,"ChatGPT",{size:22,w:700,anchor:"middle",fill:"var(--screen-dim)"})); svg.append(rect(80,290,480,56,{rx:16,stroke:"var(--screen-line)"})); svg.append(s("circle",{cx:108,cy:318,r:12,fill:"var(--screen-bg)",stroke:"var(--screen-line)"})); svg.append(txt(108,323,"+",{anchor:"middle",w:700}));
-    const menu=s("g",{class:"appear"}); menu.append(rect(90,150,180,130,{rx:12,stroke:"var(--screen-line)"})); ["Add photos & files","Create image","Deep research",u.more+" ›"].forEach((l,i)=>menu.append(txt(106,176+i*28,l,{size:12,w:i===3?600:500})));
-    menu.append(rect(280,206,180,74,{rx:12,stroke:"var(--screen-line)"})); menu.append(txt(296,232,u.devmode,{size:12,w:600})); menu.append(txt(296,260,"Targum",{size:12,w:600})); menu.append(ring(288,246,164,26)); svg.append(menu); svg.append(cursor(430,268)); return svg; },
-  upload(u){ const svg=frame(); sidebar(svg,["Projects","Library","Templates","Settings"],0); svg.append(txt(200,66,"Projects",{size:18,w:700}));
-    const dz=rect(196,90,420,150,{rx:14,fill:"var(--screen-chrome)",stroke:"var(--yellow-deep)",sw:2}); dz.setAttribute("stroke-dasharray","8 6"); svg.append(dz); svg.append(txt(406,160,u.upload,{anchor:"middle",w:600})); svg.append(txt(406,182,".mp4 .mov .mp3 .wav",{anchor:"middle",size:11,fill:"var(--screen-dim)"}));
-    const g=s("g",{class:"appear"}); g.append(rect(196,262,420,48,{stroke:"var(--screen-line)"})); g.append(rect(206,272,28,28,{rx:6,fill:"var(--yellow)"})); g.append(txt(246,284,"interview-dana.mp4",{size:12,w:600})); g.append(txt(246,300,u.ready,{size:11,fill:"var(--ok)"})); g.append(s("rect",{x:470,y:281,width:130,height:8,rx:4,fill:"var(--screen-bg)"})); g.append(s("rect",{x:470,y:281,width:130,height:8,rx:4,fill:"var(--ok)"})); svg.append(g); svg.append(cursor(406,120)); return svg; },
-  editor_tour(u){ const svg=frame(); svg.append(rect(0,28,640,36,{rx:0,fill:"var(--screen-chrome)"})); [[14,u.searchT],[200,u.cleanup],[300,u.clip]].forEach(([x,l],i)=>{ svg.append(rect(x,34,i===0?170:88,24,{rx:6,fill:i===0?"var(--screen-bg)":"var(--screen-chrome)",stroke:"var(--screen-line)"})); svg.append(txt(x+10,50,l,{size:11,w:i===1?700:500})); });
-    const words=["So","the","secret","sauce","isn't","the","LLM,","um,","it's","the","platform.","The","the","platform","is","what","lets","you","actually","ship."]; let x=24,y=110; words.forEach((w,i)=>{ const wdt=w.length*7.2+6; if(x+wdt>600){x=24;y+=30;} const cut=(w==="um,"||(w==="the"&&i===11)); if(cut){ svg.append(rect(x-3,y-15,wdt,22,{rx:4,fill:"var(--yellow)"})); svg.append(s("line",{x1:x-1,y1:y-4,x2:x+wdt-5,y2:y-4,stroke:"#141311","stroke-width":2})); } svg.append(txt(x,y,w,{size:14,fill:cut?"#141311":"var(--screen-ink)"})); x+=wdt+6; });
-    svg.append(rect(196,230,250,0,{})); svg.append(ring(200,36,88,20)); svg.append(txt(24,230,"Clean up found 2 cuts. Accept?",{size:12,fill:"var(--screen-dim)"})); svg.append(rect(24,244,72,26,{rx:8,fill:"#141311"})); svg.append(txt(60,261,"Accept",{size:11,fill:"#fff",anchor:"middle",w:600})); svg.append(rect(104,244,72,26,{rx:8,stroke:"var(--screen-line)"})); svg.append(txt(140,261,"Reject",{size:11,anchor:"middle",w:600}));
-    svg.append(rect(24,300,592,40,{rx:8,fill:"var(--screen-chrome)",stroke:"var(--screen-line)"})); for(let i=0;i<70;i++){ const hh=6+Math.abs(Math.sin(i*1.7))*22; svg.append(s("rect",{x:34+i*8.2,y:320-hh/2,width:4,height:hh,rx:2,fill:(i>26&&i<30)?"var(--yellow-deep)":"var(--screen-dim)"})); } svg.append(cursor(60,268)); return svg; }
-};
-
 /* ---------- Render ---------- */
 function render(){
   const tr=t(); document.documentElement.lang=state.lang;
@@ -444,7 +375,7 @@ function codeBox(tr, value){ return h("div",{class:"code"}, h("code",{},value), 
 function copyText(value, btn, tr){ const done=()=>{ const o=btn.textContent; btn.textContent=tr.copied; toast(tr.copied); setTimeout(()=>btn.textContent=o,1500); track("copy",null,value.slice(0,40)); }; try{ navigator.clipboard.writeText(value).then(done).catch(()=>fallbackCopy(value,done)); }catch(e){ fallbackCopy(value,done); } }
 function fallbackCopy(value, done){ const ta=h("textarea",{style:"position:fixed;opacity:0"},value); document.body.append(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){} ta.remove(); }
 function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1400); }
-function stepEl(tr, n, key, extra){ const st=tr.steps[key]; const body=h("div",{class:"body"}, h("h3",{},st.t), h("p",{},st.p)); if(st.link) body.append(h("a",{class:"steplink",href:st.link.href,target:"_blank",rel:"noopener",onclick:()=>track("step_link_click",key)},st.link.label,"↗")); if(extra) extra.forEach(x=>body.append(x)); if(SCREENS[key]) body.append(shot(SCREENS[key](tr.ui), st.cap)); return h("div",{class:"step"}, h("div",{class:"n"},n), body); }
+function stepEl(tr, n, key, extra){ const st=tr.steps[key]; const body=h("div",{class:"body"}, h("h3",{},st.t), h("p",{},st.p)); if(st.link) body.append(h("a",{class:"steplink",href:st.link.href,target:"_blank",rel:"noopener",onclick:()=>track("step_link_click",key)},st.link.label,"↗")); if(extra) extra.forEach(x=>body.append(x)); return h("div",{class:"step"}, h("div",{class:"n"},n), body); }
 function renderResult(tr){
   const path=computePath(); const a=state.a; const P=tr.paths[path.key];
   const chips=h("div",{class:"chips"}, ["assistant","mcp","plan","editing","content"].filter(k=>a[k]).map(k=>{ const qk=questionKey(QUESTION_ORDER.indexOf(k)); const o=tr.q[qk].o.find(x=>x[0]===a[k]); return h("span",{class:"chip"}, o?o[1]:a[k]); }));
