@@ -75,6 +75,9 @@ p{margin:0}
 .btn-ink{background:var(--ink);color:var(--bg)}
 .small{font-size:14px;color:var(--faint)}
 .mark{background:linear-gradient(transparent 58%,var(--yellow) 58%);padding:0 .1em}
+.why{max-width:66ch;margin-top:6px}
+.why b{font-family:var(--font-display);font-size:19px;letter-spacing:-.01em}
+.why p{color:var(--muted)}
 .fact{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:8px}
 .fact div{border-top:2px solid var(--line-2);padding-top:10px}
 .fact b{display:block;font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1.1}
@@ -405,7 +408,7 @@ en:{
     openEditor:"Open the editor",
     privacy:"Progress and answers are stored anonymously to improve these challenges.", faq:"Targum FAQ",
   stepline:"Your first week",
-  agenticTitle:"Targum is agentic-first.", agenticLead:"It's designed so your AI assistant does the hard work: it reads the transcript, finds the moments, proposes the cuts and makes the clips. You say what you want in plain words and approve the result. These six challenges teach you that way of working, on one recording of yours.", agenticLeadEditor:"It's designed so your AI assistant does the hard work: it reads the transcript, finds the moments, proposes the cuts and makes the clips. You can do all six challenges in the editor too, and connect an assistant whenever you want to hand that work over.", continueChallenges:"Continue my first week",
+  agenticTitle:"Targum is agentic-first.", agenticLead:"It's designed so your AI assistant does the hard work: it reads the transcript, finds the moments, proposes the cuts and makes the clips. You say what you want in plain words and approve the result. These six challenges teach you that way of working, on one recording of yours. Come with fresh eyes: the point is to delegate, not to click through it like your old tools.", agenticLeadEditor:"It's designed so your AI assistant does the hard work: it reads the transcript, finds the moments, proposes the cuts and makes the clips. You can do all six challenges in the editor too, and connect an assistant whenever you want to hand that work over. Come with fresh eyes: the point is to delegate, not to click through it like your old tools.", continueChallenges:"Continue my first week",
   navLabel:"First week", navCount:(d,n)=>`${d}/${n}`, navTitle:(d,n)=>`First week challenges: ${d} of ${n} done`, introContinue:(d,n)=>`Continue your first week: ${d} of ${n} done`,
   startChallenges:"Start my first week", introJump:"Already set up? Jump to the first-week challenges",
   resultCtaTitle:"Set up? Your first week starts here.", resultCtaLead:"Six short challenges, all on one recording of yours.",
@@ -444,7 +447,8 @@ en:{
   ]
   },
   approval:{t:"First time signing in? Your account needs to be approved.", p:"New accounts are approved by hand, so you may not get in straight away. Give it a little while and try again. If it is taking too long, write to ", tail:" and mention you come from Francesco."},
-  help:"Stuck on a step?", helpLine:"Claude's connector guide", faq:"Targum FAQ", privacy:"Answers are stored anonymously to improve this guide.",
+  whyTitle:"Why agent-first?", whyBody:"We think agent-first tools are better for one reason: they let you hand the tedious work to an agent instead of doing it yourself. That takes fresh eyes. If you use Targum like your existing tools, clicking through everything by hand, you are spending your time in the wrong place. Try the AI-first way: say what you want, let the assistant do the pass, and keep your attention for the decisions.",
+  helpLine:"Claude's connector guide", faq:"Targum FAQ", privacy:"Answers are stored anonymously to improve this guide.",
 },
 es:{
   stepOf:(i,n)=>`Pregunta ${i} de ${n}`, intro:"Antes de empezar", result:"Tu ruta de configuración",
@@ -584,7 +588,7 @@ es:{
     openEditor:"Abrir el editor",
     privacy:"El progreso y las respuestas se guardan de forma anónima para mejorar estos retos.", faq:"FAQ de Targum",
   stepline:"Tu primera semana",
-  agenticTitle:"Targum es agentic-first.", agenticLead:"Está diseñado para que tu asistente de IA haga el trabajo duro: lee la transcripción, encuentra los momentos, propone los cortes y hace los clips. Tú dices lo que quieres con tus palabras y apruebas el resultado. Estos seis retos te enseñan esa forma de trabajar, con una grabación tuya.", agenticLeadEditor:"Está diseñado para que tu asistente de IA haga el trabajo duro: lee la transcripción, encuentra los momentos, propone los cortes y hace los clips. Los seis retos también se pueden hacer en el editor, y puedes conectar un asistente cuando quieras delegarle ese trabajo.", continueChallenges:"Seguir con mi primera semana",
+  agenticTitle:"Targum es agentic-first.", agenticLead:"Está diseñado para que tu asistente de IA haga el trabajo duro: lee la transcripción, encuentra los momentos, propone los cortes y hace los clips. Tú dices lo que quieres con tus palabras y apruebas el resultado. Estos seis retos te enseñan esa forma de trabajar, con una grabación tuya. Ven con ojos nuevos: la idea es delegar, no hacer clic en todo como con tus herramientas de siempre.", agenticLeadEditor:"Está diseñado para que tu asistente de IA haga el trabajo duro: lee la transcripción, encuentra los momentos, propone los cortes y hace los clips. Los seis retos también se pueden hacer en el editor, y puedes conectar un asistente cuando quieras delegarle ese trabajo. Ven con ojos nuevos: la idea es delegar, no hacer clic en todo como con tus herramientas de siempre.", continueChallenges:"Seguir con mi primera semana",
   navLabel:"Primera semana", navCount:(d,n)=>`${d}/${n}`, navTitle:(d,n)=>`Retos de la primera semana: ${d} de ${n} hechos`, introContinue:(d,n)=>`Sigue con tu primera semana: ${d} de ${n} hechos`,
   startChallenges:"Empezar mi primera semana", introJump:"¿Ya lo tienes configurado? Ve a los retos de la primera semana",
   resultCtaTitle:"¿Configurado? Tu primera semana empieza aquí.", resultCtaLead:"Seis retos cortos, todos con una grabación tuya.",
@@ -623,7 +627,8 @@ es:{
   ]
   },
   approval:{t:"¿Primera vez que entras? Tu cuenta tiene que ser aprobada.", p:"Las cuentas nuevas se aprueban a mano, así que puede que no entres a la primera. Espera un poco y vuelve a intentarlo. Si tarda demasiado, escribe a ", tail:" y di que vienes de parte de Francesco."},
-  help:"¿Atascado en un paso?", helpLine:"Guía de conectores de Claude", faq:"FAQ de Targum", privacy:"Las respuestas se guardan de forma anónima para mejorar esta guía.",
+  whyTitle:"¿Por qué agent-first?", whyBody:"Creemos que las herramientas agent-first son mejores por una razón: te permiten delegar el trabajo tedioso en un agente en vez de hacerlo tú. Eso pide mirar con ojos nuevos. Si usas Targum como tus herramientas de siempre, haciéndolo todo a mano, estás gastando tu tiempo en el sitio equivocado. Prueba el enfoque AI-first: di lo que quieres, deja que el asistente haga la pasada y guarda tu atención para las decisiones.",
+  helpLine:"Guía de conectores de Claude", faq:"FAQ de Targum", privacy:"Las respuestas se guardan de forma anónima para mejorar esta guía.",
 }};
 
 /* ---------- State ---------- */
@@ -705,6 +710,7 @@ function renderIntro(tr){
     h("p",{class:"small heads"},tr.headsUp),
     h("div",{class:"hero-row"}, h("button",{type:"button",class:"btn btn-primary",onclick:()=>{ state.screen="question"; state.qi=0; track("quiz_start"); saveSession(false); render(); }},tr.start,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","intro")},tr.skip), h("span",{class:"small"},tr.takes)),
     h("button",{type:"button",class:"linkbtn",style:"justify-self:start",onclick:()=>goChallenges("intro")},(state.done.length?tr.fw.introContinue(state.done.length,IDS.length):tr.fw.introJump)+" →"),
+    h("div",{class:"note why"}, h("b",{},tr.whyTitle), h("p",{},tr.whyBody)),
     h("div",{class:"fact"}, tr.facts.map(([b,l])=>h("div",{},h("b",{},b),h("span",{},l))))
   );
 }
