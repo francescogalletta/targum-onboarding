@@ -18,7 +18,7 @@ One static, self-contained HTML page plus a redirect (no build step, no dependen
 ## Analytics / data (already live, nothing to deploy)
 Both pages POST anonymously to Supabase project **targum-onboarding** (`bvqdeilzhvepczhpkkwe`, eu-west-1):
 - `POST /rest/v1/rpc/upsert_onboarding_session` with `{p:{session_id, lang, mcp_familiarity, assistant, plan, video_editing, content_type, path, completed, user_agent, referrer}}` — one row per visitor in `onboarding_sessions`.
-- `POST /rest/v1/onboarding_events` with `{session_id, event, step, value, lang, path}` — events: `page_view, quiz_start, answer, path_shown, signin_click, editor_click, step_link_click, approval_open, copy, lang_change, restart, challenge_*`.
+- `POST /rest/v1/onboarding_events` with `{session_id, event, step, value, lang, path}` — events: `page_view, quiz_start, answer, path_shown, signin_click, editor_click, step_link_click, approval_open, guide_prompt_copy, copy, lang_change, restart, challenge_*`.
 - Config lives at the top of each page's script in `CONFIG` (URL + publishable key; the key is public by design, RLS allows insert only).
 - `onboarding_funnel` view gives quick counts. One stray test row `session_id='probe-check'` can be deleted.
 

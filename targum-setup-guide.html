@@ -115,6 +115,12 @@ p{margin:0}
 .prompt{background:var(--surface);border:1.5px dashed var(--line-2);border-radius:14px;padding:14px 16px;display:grid;gap:10px}
 .prompt .pl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700}
 .prompt q{quotes:none;font-size:17px}
+.prompt.feature{background:color-mix(in srgb,var(--yellow) 22%,var(--surface));border:1.5px solid var(--yellow-deep)}
+.prompt.feature .pl{color:var(--fg)}
+.prompt.feature q{font-family:var(--font-mono);font-size:15px;line-height:1.6;overflow-wrap:anywhere}
+.why .prompt.feature{margin-top:8px;padding:10px 12px;gap:8px}
+.why .prompt.feature q{font-size:14px}
+.fw .hero .prompt.feature{max-width:64ch}
 .foot{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;align-items:center;font-size:14px;color:var(--faint)}
 .foot a{color:var(--muted)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
@@ -289,6 +295,7 @@ en:{
   },
   signin:"Sign in to Targum", openEditor:"Open the editor", copy:"Copy", copied:"Copied", copyPrompt:"Copy prompt",
   firstPrompt:"Your first prompt", tryIt:"Paste this into a chat with Targum enabled:",
+  guidePrompt:"Hey, I've connected Targum (https://targum.video/mcp). Tell me what we can do together, then walk me through my first edit, one step at a time.", guideLabel:"Start with this", guideHomeLabel:"Once connected, start with this", guideFwLabel:"Not sure where to start? Let your assistant guide you",
   mcpExplainer:{t:"What's a connector?", p:"It's how your assistant gets to use Targum for you. You sign in with Google once and say yes to a permissions screen. From then on you just ask: find the best moment, clean up the ums, make a clip. You approve every change before it happens."},
   planNotes:{
     claude_free:["Custom connectors need a paid Claude plan.","On the Free plan, use the editor directly (below), or upgrade to Pro and follow the connector steps."],
@@ -309,7 +316,8 @@ en:{
     gpt_enable:{t:"Use it in a chat", p:"In a new chat, click +, then More, then Developer mode, and pick Targum. ChatGPT shows each tool call before it runs; confirm it.", link:{href:CONFIG.chatgptNewChatUrl, label:"Open a new chat in ChatGPT"}},
     upload:{t:"Add your first recording", p:"Open the editor and drop in a video or audio file. Targum transcribes it; you can start editing as soon as the transcript is in, before the video finishes preparing. Note: YouTube links and live streams don't import. Download the file first.", link:{href:CONFIG.editorUrl, label:"Open the Targum editor"}},
     editor_tour:{t:"Try the three core moves", p:"Search the transcript for a topic, run Clean up to flag stutters and filler, and make a clip from any passage. Nothing is cut until you accept it."},
-    first_prompt:{t:"Say what you want", p:"Talk to the assistant in plain language. It finds the moments, proposes cuts and clips, and waits for your decision."}
+    guide:{t:"Let your assistant show you around", p:"No need to learn Targum first. Paste this and your assistant takes charge: it explains what it can do with your recordings, suggests where to start and walks you through every step. Ask it anything along the way."},
+    first_prompt:{t:"When you're ready, ask for a real edit", p:"Talk to the assistant in plain language. It finds the moments, proposes cuts and clips, and waits for your decision."}
   },
   editingLine:{
     pro:"Coming from a pro editor: think of Targum as a very fast rough cut and selects pass. Export captions and bring the result into your timeline, or finish here.",
@@ -469,6 +477,7 @@ es:{
   },
   signin:"Iniciar sesión en Targum", openEditor:"Abrir el editor", copy:"Copiar", copied:"Copiado", copyPrompt:"Copiar prompt",
   firstPrompt:"Tu primer prompt", tryIt:"Pégalo en un chat con Targum activado:",
+  guidePrompt:"Hola, he conectado Targum (https://targum.video/mcp). Cuéntame qué podemos hacer juntos y luego guíame en mi primera edición, paso a paso.", guideLabel:"Empieza con esto", guideHomeLabel:"Cuando lo conectes, empieza con esto", guideFwLabel:"¿No sabes por dónde empezar? Deja que tu asistente te guíe",
   mcpExplainer:{t:"¿Qué es un conector?", p:"Es lo que permite que tu asistente use Targum por ti. Inicias sesión con Google una vez y aceptas una pantalla de permisos. Desde entonces solo pides: busca el mejor momento, limpia las muletillas, haz un clip. Tú apruebas cada cambio antes de que ocurra."},
   planNotes:{
     claude_free:["Los conectores personalizados requieren un plan de pago de Claude.","Con el plan Free, usa el editor directamente (abajo) o pasa a Pro y sigue los pasos del conector."],
@@ -489,7 +498,8 @@ es:{
     gpt_enable:{t:"Úsalo en un chat", p:"En un chat nuevo, pulsa +, luego More, después Developer mode y elige Targum. ChatGPT muestra cada llamada a herramienta antes de ejecutarla; confírmala.", link:{href:CONFIG.chatgptNewChatUrl, label:"Abrir un chat nuevo en ChatGPT"}},
     upload:{t:"Añade tu primera grabación", p:"Abre el editor y arrastra un archivo de vídeo o audio. Targum lo transcribe; puedes empezar a editar en cuanto esté la transcripción, antes de que termine de preparar el vídeo. Ojo: los enlaces de YouTube y los directos no se importan. Descarga el archivo primero.", link:{href:CONFIG.editorUrl, label:"Abrir el editor de Targum"}},
     editor_tour:{t:"Prueba los tres movimientos básicos", p:"Busca un tema en la transcripción, ejecuta Clean up para marcar tartamudeos y muletillas, y haz un clip de cualquier pasaje. No se corta nada hasta que lo aceptes."},
-    first_prompt:{t:"Di lo que quieres", p:"Habla con el asistente en lenguaje natural. Encuentra los momentos, propone cortes y clips, y espera tu decisión."}
+    guide:{t:"Deja que tu asistente te enseñe Targum", p:"No hace falta aprender Targum antes. Pega esto y tu asistente toma el mando: te explica qué puede hacer con tus grabaciones, te propone por dónde empezar y te guía en cada paso. Pregúntale lo que quieras por el camino."},
+    first_prompt:{t:"Cuando quieras, pide una edición de verdad", p:"Habla con el asistente en lenguaje natural. Encuentra los momentos, propone cortes y clips, y espera tu decisión."}
   },
   editingLine:{
     pro:"Si vienes de un editor profesional: piensa en Targum como una pasada de selección y montaje en bruto muy rápida. Exporta los subtítulos y lleva el resultado a tu línea de tiempo, o termínalo aquí.",
@@ -700,7 +710,7 @@ function renderIntro(tr){
     h("p",{class:"small heads"},tr.headsUp),
     h("div",{class:"hero-row"}, h("button",{type:"button",class:"btn btn-primary",onclick:()=>{ state.screen="question"; state.qi=0; track("quiz_start"); saveSession(false); render(); }},tr.start,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","intro")},tr.skip), h("span",{class:"small"},tr.takes)),
     h("button",{type:"button",class:"linkbtn",style:"justify-self:start",onclick:()=>goChallenges("intro")},(state.done.length?tr.fw.introContinue(state.done.length,IDS.length):tr.fw.introJump)+" →"),
-    h("div",{class:"note why"}, h("b",{},tr.whyTitle), h("p",{},tr.whyBody)),
+    h("div",{class:"note why"}, h("b",{},tr.whyTitle), h("p",{},tr.whyBody), guideBox(tr,"home",tr.guideHomeLabel)),
     h("div",{class:"fact"}, tr.facts.map(([b,l])=>h("div",{},h("b",{},b),h("span",{},l))))
   );
 }
@@ -715,6 +725,7 @@ function copyText(value, btn, tr, evt, step){ const done=()=>{ const o=btn.textC
 function fallbackCopy(value, done){ const ta=h("textarea",{style:"position:fixed;opacity:0"},value); document.body.append(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){} ta.remove(); }
 function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1400); }
 function approvalBox(tr){ const a=tr.approval; return h("details",{class:"alt approval",ontoggle:(e)=>{ if(e.target.open) track("approval_open",null,null); }}, h("summary",{},a.t), h("p",{}, a.p, h("a",{href:"mailto:altryne@gmail.com?subject="+encodeURIComponent(tr.fw.contactSubject),onclick:()=>track("challenge_link","contact_email_approval",null)},"altryne@gmail.com"), a.tail)); }
+function guideBox(tr, where, label){ return h("div",{class:"prompt feature"}, h("div",{class:"pl"},label||tr.guideLabel), h("q",{},tr.guidePrompt), h("div",{}, h("button",{type:"button",class:"copy",onclick:(e)=>copyText(tr.guidePrompt,e.currentTarget,tr,"guide_prompt_copy",where)},tr.copyPrompt))); }
 function stepEl(tr, n, key, extra){ const st=tr.steps[key]; const body=h("div",{class:"body"}, h("h3",{},st.t), h("p",{},st.p)); if(st.link) body.append(h("a",{class:"steplink",href:st.link.href,target:"_blank",rel:"noopener",onclick:()=>track("step_link_click",key)},st.link.label,"↗")); if(extra) extra.forEach(x=>body.append(x)); return h("div",{class:"step"}, h("div",{class:"n"},n), body); }
 function renderResult(tr){
   const path=computePath(); const a=state.a; const P=tr.paths[path.key];
@@ -734,12 +745,12 @@ function renderResult(tr){
   const promptBox=h("div",{class:"prompt"}, h("div",{class:"pl"},tr.firstPrompt), h("q",{},prompt), h("div",{}, h("button",{type:"button",class:"copy",onclick:(e)=>copyText(prompt,e.currentTarget,tr)},tr.copyPrompt)));
   steps.append(stepEl(tr,n++,"signin",[approvalBox(tr)]));
   if(path.key==="claude"){
-    steps.append(stepEl(tr,n++,"claude_settings")); steps.append(stepEl(tr,n++,"claude_add",[codeBox(tr,CONFIG.mcpUrl)])); steps.append(stepEl(tr,n++,"oauth")); steps.append(stepEl(tr,n++,"claude_enable")); steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"first_prompt",[h("p",{},tr.tryIt),promptBox]));
+    steps.append(stepEl(tr,n++,"claude_settings")); steps.append(stepEl(tr,n++,"claude_add",[codeBox(tr,CONFIG.mcpUrl)])); steps.append(stepEl(tr,n++,"oauth")); steps.append(stepEl(tr,n++,"claude_enable")); steps.append(stepEl(tr,n++,"guide",[guideBox(tr,"setup")])); steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"first_prompt",[h("p",{},tr.tryIt),promptBox]));
   } else if(path.key==="chatgpt"){
-    steps.append(stepEl(tr,n++,"gpt_dev")); steps.append(stepEl(tr,n++,"gpt_create",[codeBox(tr,CONFIG.mcpUrl)])); steps.append(stepEl(tr,n++,"oauth")); steps.append(stepEl(tr,n++,"gpt_enable")); steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"first_prompt",[h("p",{},tr.tryIt),promptBox]));
+    steps.append(stepEl(tr,n++,"gpt_dev")); steps.append(stepEl(tr,n++,"gpt_create",[codeBox(tr,CONFIG.mcpUrl)])); steps.append(stepEl(tr,n++,"oauth")); steps.append(stepEl(tr,n++,"gpt_enable")); steps.append(stepEl(tr,n++,"guide",[guideBox(tr,"setup")])); steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"first_prompt",[h("p",{},tr.tryIt),promptBox]));
   } else {
     steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"editor_tour"));
-    if(path.alt==="claude"){ steps.append(stepEl(tr,n++,"claude_settings")); steps.append(stepEl(tr,n++,"claude_add",[codeBox(tr,CONFIG.mcpUrl)])); }
+    if(path.alt==="claude"){ steps.append(stepEl(tr,n++,"claude_settings")); steps.append(stepEl(tr,n++,"claude_add",[codeBox(tr,CONFIG.mcpUrl)])); steps.append(stepEl(tr,n++,"guide",[guideBox(tr,"setup_alt")])); }
   }
   sec.append(steps);
   const f=tr.fw;
@@ -804,6 +815,7 @@ function renderFwHero(f){
     h("button",{type:"button",class:"linkbtn",onclick:goSetup},"← "+(state.a.assistant?f.backToSetup:f.findSetup)),
     h("h1",{},f.heroTitle),
     h("div",{class:"callout"}, h("b",{},f.agenticTitle), h("p",{},editorMode()?f.agenticLeadEditor:f.agenticLead)),
+    editorMode()?null:guideBox(t(),"challenges",t().guideFwLabel),
     h("p",{class:"small heads"},f.headsUp),
     renderScrubber(f));
 }
