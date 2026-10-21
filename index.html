@@ -132,6 +132,9 @@ p{margin:0}
 .fw .eyebrow,.nextbox .eyebrow{font-family:var(--font-mono);font-size:13px;color:var(--faint);letter-spacing:.04em}
 .fw .hero{padding-block:28px 6px}
 .fw .hero .linkbtn{justify-self:start;font-size:15px}
+.callout{background:var(--ink);color:var(--bg);border-radius:16px;padding:18px 20px;display:grid;gap:6px;max-width:64ch}
+.callout b{font-family:var(--font-display);font-size:20px;color:var(--yellow)}
+.callout p{color:#D8D4C4}
 .fw .note p{color:var(--muted)}
 .fw .prompt q{font-family:var(--font-mono);font-size:14.5px;line-height:1.6;overflow-wrap:anywhere}
 .nextbox{margin-top:36px;border:1.5px solid var(--line-2);border-radius:20px;padding:24px;background:var(--surface);display:grid;gap:10px}
@@ -325,9 +328,7 @@ en:{
     solo_creator:"Clean up my ums and false starts, then cut this into a tight version under 5 minutes and a 30-second teaser."
   },
   fw:{
-    eyebrow:"Test phase · 6 challenges",
     heroTitle:"Your first week with Targum",
-    heroLead:"Six short challenges. You do every one by asking your assistant in plain words, then checking and approving the result in the editor. Do one a day, or all six in an afternoon.",
     headsUp:"Nothing gets cut or rendered until you say yes.",
     progress:(n)=>`${n} of 6 done`, reset:"Reset progress", resetConfirm:"Tap again to reset", resetDone:"Progress reset",
     jump:(n)=>`Go to challenge ${n}`,
@@ -338,7 +339,7 @@ en:{
       {id:"p3", t:"One recording uploaded", p:"Any podcast episode, interview or lesson between 5 and 30 minutes. Drop it into the editor and wait until the transcript appears.", link:"Open the editor", href:"editor"}
     ],
     listTitle:"The six challenges", listLead:"Go in order. Each one builds on the last, and they all use the same recording.",
-    you:"you'll learn", learn:"You'll learn", doThis:"Do this", prompt:"Paste this to your assistant", copy:"Copy", copied:"Copied", copyPrompt:"Copy prompt",
+    learn:"You'll learn", doThis:"Do this", prompt:"Paste this to your assistant", copy:"Copy", copied:"Copied", copyPrompt:"Copy prompt",
     worked:"How you know it worked", tip:"Tip", stuck:"If it doesn't work",
   done:"Done", markDone:"Mark as done", isDone:"Done. Undo?", next:"Next challenge",
     allDoneToast:"All six done. Nice work.",
@@ -399,11 +400,11 @@ en:{
     openEditor:"Open the editor",
     privacy:"Progress and answers are stored anonymously to improve these challenges.", faq:"Targum FAQ",
   stepline:"Your first week",
+  agenticTitle:"Targum is agentic-first.", agenticLead:"It's designed so your AI assistant does the hard work: it reads the transcript, finds the moments, proposes the cuts and makes the clips. You say what you want in plain words and approve the result. These six challenges teach you that way of working, on one recording of yours.", agenticLeadEditor:"It's designed so your AI assistant does the hard work: it reads the transcript, finds the moments, proposes the cuts and makes the clips. You can do all six challenges in the editor too, and connect an assistant whenever you want to hand that work over.", continueChallenges:"Continue my first week",
   navLabel:"First week", navCount:(d,n)=>`${d}/${n}`, navTitle:(d,n)=>`First week challenges: ${d} of ${n} done`, introContinue:(d,n)=>`Continue your first week: ${d} of ${n} done`,
   startChallenges:"Start my first week", introJump:"Already set up? Jump to the first-week challenges",
   resultCtaTitle:"Set up? Your first week starts here.", resultCtaLead:"Six short challenges, all on one recording of yours.",
   backToSetup:"Back to my setup path", findSetup:"Find my setup path", preBackToSetup:"Back to the setup steps",
-  heroLeadEditor:"Six short challenges. You do every one in the editor: search the transcript, accept or reject suggestions, make clips. Do one a day, or all six in an afternoon.",
   preEditor:{id:"p2e", t:"The editor open in a tab", p:"Everything in these challenges happens in the editor's transcript view. Keep it open next to this page.", link:"Open the editor", href:"editor"},
   altPrompt:"Connect an assistant later and you can hand over this whole challenge in one message:",
   exampleFor:(what)=>`A guided example for your ${what}`,
@@ -505,9 +506,7 @@ es:{
     solo_creator:"Limpia mis muletillas y falsos arranques, y deja una versión ajustada de menos de 5 minutos y un teaser de 30 segundos."
   },
   fw:{
-    eyebrow:"Fase de prueba · 6 retos",
     heroTitle:"Tu primera semana con Targum",
-    heroLead:"Seis retos cortos. Todos se hacen igual: le pides a tu asistente lo que quieres con tus palabras y luego revisas y apruebas el resultado en el editor. Uno al día, o los seis en una tarde.",
     headsUp:"No se corta ni se renderiza nada hasta que tú lo apruebes.",
     progress:(n)=>`${n} de 6 hechos`, reset:"Reiniciar progreso", resetConfirm:"Pulsa otra vez para reiniciar", resetDone:"Progreso reiniciado",
     jump:(n)=>`Ir al reto ${n}`,
@@ -518,7 +517,7 @@ es:{
       {id:"p3", t:"Una grabación subida", p:"Cualquier episodio de pódcast, entrevista o clase de entre 5 y 30 minutos. Arrástrala al editor y espera a que aparezca la transcripción.", link:"Abrir el editor", href:"editor"}
     ],
     listTitle:"Los seis retos", listLead:"Hazlos en orden. Cada uno parte del anterior y todos usan la misma grabación.",
-    you:"aprenderás", learn:"Aprenderás", doThis:"Qué hacer", prompt:"Pégale esto a tu asistente", copy:"Copiar", copied:"Copiado", copyPrompt:"Copiar mensaje",
+    learn:"Aprenderás", doThis:"Qué hacer", prompt:"Pégale esto a tu asistente", copy:"Copiar", copied:"Copiado", copyPrompt:"Copiar mensaje",
     worked:"Cómo sabes que ha funcionado", tip:"Consejo", stuck:"Si no funciona",
   done:"Hecho", markDone:"Marcar como hecho", isDone:"Hecho. ¿Deshacer?", next:"Siguiente reto",
     allDoneToast:"Los seis, hechos. Buen trabajo.",
@@ -579,11 +578,11 @@ es:{
     openEditor:"Abrir el editor",
     privacy:"El progreso y las respuestas se guardan de forma anónima para mejorar estos retos.", faq:"FAQ de Targum",
   stepline:"Tu primera semana",
+  agenticTitle:"Targum es agentic-first.", agenticLead:"Está diseñado para que tu asistente de IA haga el trabajo duro: lee la transcripción, encuentra los momentos, propone los cortes y hace los clips. Tú dices lo que quieres con tus palabras y apruebas el resultado. Estos seis retos te enseñan esa forma de trabajar, con una grabación tuya.", agenticLeadEditor:"Está diseñado para que tu asistente de IA haga el trabajo duro: lee la transcripción, encuentra los momentos, propone los cortes y hace los clips. Los seis retos también se pueden hacer en el editor, y puedes conectar un asistente cuando quieras delegarle ese trabajo.", continueChallenges:"Seguir con mi primera semana",
   navLabel:"Primera semana", navCount:(d,n)=>`${d}/${n}`, navTitle:(d,n)=>`Retos de la primera semana: ${d} de ${n} hechos`, introContinue:(d,n)=>`Sigue con tu primera semana: ${d} de ${n} hechos`,
   startChallenges:"Empezar mi primera semana", introJump:"¿Ya lo tienes configurado? Ve a los retos de la primera semana",
   resultCtaTitle:"¿Configurado? Tu primera semana empieza aquí.", resultCtaLead:"Seis retos cortos, todos con una grabación tuya.",
   backToSetup:"Volver a mi ruta de configuración", findSetup:"Encontrar mi ruta de configuración", preBackToSetup:"Volver a los pasos de configuración",
-  heroLeadEditor:"Seis retos cortos. Todos se hacen en el editor: buscas en la transcripción, aceptas o rechazas sugerencias, haces clips. Uno al día, o los seis en una tarde.",
   preEditor:{id:"p2e", t:"El editor abierto en una pestaña", p:"Todo lo de estos retos pasa en la vista de transcripción del editor. Tenlo abierto al lado de esta página.", link:"Abrir el editor", href:"editor"},
   altPrompt:"Si más adelante conectas un asistente, podrás delegarle este reto entero con un mensaje:",
   exampleFor:(what)=>`Un ejemplo guiado para tu ${what}`,
@@ -740,8 +739,8 @@ function renderResult(tr){
   }
   sec.append(steps);
   const f=tr.fw;
-  sec.append(h("div",{class:"nextbox"}, h("div",{class:"eyebrow"},f.stepline), h("h3",{},f.resultCtaTitle), h("p",{},f.resultCtaLead),
-    h("div",{class:"hero-row"}, h("button",{type:"button",class:"btn btn-primary",onclick:()=>goChallenges("result")},f.startChallenges,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.editorUrl,target:"_blank",rel:"noopener",onclick:()=>track("editor_click","bottom")},tr.openEditor))));
+  sec.append(h("div",{class:"nextbox"}, h("div",{class:"eyebrow"},f.stepline), h("h3",{},f.resultCtaTitle), h("p",{},state.done.length?f.introContinue(state.done.length,IDS.length)+".":f.resultCtaLead),
+    h("div",{class:"hero-row"}, h("button",{type:"button",class:"btn btn-primary",onclick:()=>goChallenges("result")},state.done.length?f.continueChallenges:f.startChallenges,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.editorUrl,target:"_blank",rel:"noopener",onclick:()=>track("editor_click","bottom")},tr.openEditor))));
   sec.append(h("div",{class:"hero-row",style:"margin-top:8px"}, h("button",{type:"button",class:"linkbtn",onclick:()=>{ state.a={}; persist(); state.screen="intro"; state.qi=0; track("restart"); render(); }},tr.restart)));
   return sec;
 }
@@ -799,9 +798,8 @@ function renderScrubber(f){
 function renderFwHero(f){
   return h("section",{class:"hero"},
     h("button",{type:"button",class:"linkbtn",onclick:goSetup},"← "+(state.a.assistant?f.backToSetup:f.findSetup)),
-    h("div",{class:"eyebrow"},f.eyebrow),
     h("h1",{},f.heroTitle),
-    h("p",{class:"lead"},editorMode()?f.heroLeadEditor:tailor(f.heroLead)),
+    h("div",{class:"callout"}, h("b",{},f.agenticTitle), h("p",{},editorMode()?f.agenticLeadEditor:f.agenticLead)),
     h("p",{class:"small heads"},f.headsUp),
     renderScrubber(f));
 }
