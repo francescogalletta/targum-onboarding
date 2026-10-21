@@ -133,6 +133,11 @@ p{margin:0}
 .alt{border:1.5px dashed var(--line-2);border-radius:14px;padding:12px 16px;display:grid;gap:10px}
 .alt summary{cursor:pointer;font-size:15px;color:var(--muted);font-weight:600}
 .alt q{quotes:none;font-family:var(--font-mono);font-size:14.5px;line-height:1.6;overflow-wrap:anywhere;display:block}
+.approval{border-style:solid;border-color:var(--warn);background:color-mix(in srgb,var(--warn) 7%,var(--surface));max-width:62ch}
+.approval summary{color:var(--fg)}
+.approval p{color:var(--muted);font-size:15.5px}
+.approval a{font-weight:600;color:var(--fg)}
+.pre-item .approval{margin-top:6px}
 .scrub{display:grid;gap:10px;margin-top:6px}
 .scrub-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
 .scrub-count{font-family:var(--font-mono);font-size:15px;font-variant-numeric:tabular-nums;color:var(--fg)}
@@ -428,6 +433,7 @@ en:{
      fix:"Render is greyed out: select the clip first. It says you're out of credits: top up in the editor, then try again."}
   ]
   },
+  approval:{t:"First time signing in? Your account needs to be approved.", p:"New accounts are approved by hand, so you may not get in straight away. Give it a little while and try again. If it is taking too long, write to ", tail:" and mention you come from Francesco."},
   help:"Stuck on a step?", helpLine:"Claude's connector guide", faq:"Targum FAQ", privacy:"Answers are stored anonymously to improve this guide.",
 },
 es:{
@@ -606,6 +612,7 @@ es:{
      fix:"Render está desactivado: selecciona primero el clip. Dice que no te quedan créditos: recarga en el editor y vuelve a intentarlo."}
   ]
   },
+  approval:{t:"¿Primera vez que entras? Tu cuenta tiene que ser aprobada.", p:"Las cuentas nuevas se aprueban a mano, así que puede que no entres a la primera. Espera un poco y vuelve a intentarlo. Si tarda demasiado, escribe a ", tail:" y di que vienes de parte de Francesco."},
   help:"¿Atascado en un paso?", helpLine:"Guía de conectores de Claude", faq:"FAQ de Targum", privacy:"Las respuestas se guardan de forma anónima para mejorar esta guía.",
 }};
 
@@ -701,6 +708,7 @@ function codeBox(tr, value){ return h("div",{class:"code"}, h("code",{},value), 
 function copyText(value, btn, tr, evt, step){ const done=()=>{ const o=btn.textContent; btn.textContent=tr.copied; toast(tr.copied); setTimeout(()=>btn.textContent=o,1500); if(evt) track(evt,step||null,null); else track("copy",null,value.slice(0,40)); }; try{ navigator.clipboard.writeText(value).then(done).catch(()=>fallbackCopy(value,done)); }catch(e){ fallbackCopy(value,done); } }
 function fallbackCopy(value, done){ const ta=h("textarea",{style:"position:fixed;opacity:0"},value); document.body.append(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){} ta.remove(); }
 function toast(msg){ const el=$("toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1400); }
+function approvalBox(tr){ const a=tr.approval; return h("details",{class:"alt approval",ontoggle:(e)=>{ if(e.target.open) track("approval_open",null,null); }}, h("summary",{},a.t), h("p",{}, a.p, h("a",{href:"mailto:altryne@gmail.com?subject="+encodeURIComponent(tr.fw.contactSubject),onclick:()=>track("challenge_link","contact_email_approval",null)},"altryne@gmail.com"), a.tail)); }
 function stepEl(tr, n, key, extra){ const st=tr.steps[key]; const body=h("div",{class:"body"}, h("h3",{},st.t), h("p",{},st.p)); if(st.link) body.append(h("a",{class:"steplink",href:st.link.href,target:"_blank",rel:"noopener",onclick:()=>track("step_link_click",key)},st.link.label,"↗")); if(extra) extra.forEach(x=>body.append(x)); return h("div",{class:"step"}, h("div",{class:"n"},n), body); }
 function renderResult(tr){
   const path=computePath(); const a=state.a; const P=tr.paths[path.key];
@@ -718,7 +726,7 @@ function renderResult(tr){
   const steps=h("div",{class:"steps"}); let n=1;
   const prompt=tr.prompts[a.content||"video_podcast"];
   const promptBox=h("div",{class:"prompt"}, h("div",{class:"pl"},tr.firstPrompt), h("q",{},prompt), h("div",{}, h("button",{type:"button",class:"copy",onclick:(e)=>copyText(prompt,e.currentTarget,tr)},tr.copyPrompt)));
-  steps.append(stepEl(tr,n++,"signin"));
+  steps.append(stepEl(tr,n++,"signin",[approvalBox(tr)]));
   if(path.key==="claude"){
     steps.append(stepEl(tr,n++,"claude_settings")); steps.append(stepEl(tr,n++,"claude_add",[codeBox(tr,CONFIG.mcpUrl)])); steps.append(stepEl(tr,n++,"oauth")); steps.append(stepEl(tr,n++,"claude_enable")); steps.append(stepEl(tr,n++,"upload")); steps.append(stepEl(tr,n++,"first_prompt",[h("p",{},tr.tryIt),promptBox]));
   } else if(path.key==="chatgpt"){
@@ -802,7 +810,7 @@ function renderPre(f){
     const link = it.href==="guide"
       ? h("button",{type:"button",class:"linkbtn",onclick:goSetup},f.preBackToSetup+" →")
       : h("a",{href:hrefFor(it.href),target:"_blank",rel:"noopener",onclick:()=>track("challenge_link",it.href,null)},it.link+" →");
-    return h("div",{class:"pre-item"}, box, h("div",{class:"txt"}, h("label",{for:id},tailor(it.t)), h("p",{},tailor(it.p)), link));
+    return h("div",{class:"pre-item"}, box, h("div",{class:"txt"}, h("label",{for:id},tailor(it.t)), h("p",{},tailor(it.p)), link, it.id==="p1"?approvalBox(t()):null));
   });
   return h("section",{class:"section","aria-labelledby":"pre-h"}, h("div",{class:"sec-head"}, h("h2",{id:"pre-h"},f.preTitle), h("p",{},f.preLead)), h("div",{class:"pre"},items));
 }
