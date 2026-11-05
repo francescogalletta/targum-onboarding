@@ -23,6 +23,7 @@ Both pages POST anonymously to Supabase project **targum-onboarding** (`bvqdeilz
 - `onboarding_funnel` view gives quick counts. One stray test row `session_id='probe-check'` can be deleted.
 
 ## Known follow-ups (not required for publishing)
+- Sign-up points to the Targum editor (`CONFIG.signupUrl`, targum.video/editor), which is a separate product from the targum.video website. The footer's "Targum FAQ" link still goes to targum.video/faq on the main site; check it is about the editor, or repoint or remove it.
 - The editor-only variants of the challenges (shown when the visitor has no assistant) describe editor actions in general terms (Search transcript, Clean up, Make clip, Render, SRT export). Verify the wording against the editor.
 - The setup guide has no screenshots: the animated mock screens were removed because they were not exact renders of the real UIs. Real screenshots can be added per step by appending an `<img>` to the step body in `stepEl()`.
 - The challenges page guesses some editor wording (SRT export button, "Select" vs "Approve" on a clip, where credits are bought). Fix once verified in the editor.

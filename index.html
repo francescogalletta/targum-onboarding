@@ -245,7 +245,7 @@ p{margin:0}
 
 <div class="wrap">
   <header class="top">
-    <a class="brand" href="https://targum.video" target="_blank" rel="noopener"><span class="t">T</span><span>Targum</span></a>
+    <a class="brand" href="https://targum.video/editor" target="_blank" rel="noopener"><span class="t">T</span><span>Targum</span></a>
     <button type="button" id="nav-fw" class="navfw"><span class="lbl"></span><span class="cnt"></span></button>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" id="lang-en" data-lang="en" aria-pressed="true">EN</button>
@@ -264,7 +264,8 @@ p{margin:0}
 const CONFIG = {
   supabaseUrl: "https://bvqdeilzhvepczhpkkwe.supabase.co",
   supabaseKey: "sb_publishable_M5YBI1Q8pflM_fhKAsgYZA_EiD5-4SM",
-  loginUrl: "https://targum.video/login",
+  /* Sign-up lives in the Targum editor, a separate product from the targum.video website. */
+  signupUrl: "https://targum.video/editor",
   editorUrl: "https://targum.video/editor",
   mcpUrl: "https://targum.video/mcp",
   claudeConnectorsDoc: "https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp",
@@ -303,7 +304,7 @@ en:{
     chatgpt:{eyebrow:"Recommended for you", title:"Connect Targum to ChatGPT", lead:"You'll add Targum as a connector in developer mode. After that, you edit by chatting: find moments, clean up stutters, make clips, render."},
     editor:{eyebrow:"Recommended for you", title:"Start in the Targum editor", lead:"No assistant needed. The editor has the same transcript-first tools: search, clean-up, clips and captions. You can connect an assistant later."}
   },
-  signin:"Sign in to Targum", openEditor:"Open the editor", copy:"Copy", copied:"Copied", copyPrompt:"Copy prompt",
+  signin:"Sign up in the Targum editor", openEditor:"Open the editor", copy:"Copy", copied:"Copied", copyPrompt:"Copy prompt",
   firstPrompt:"Your first prompt", tryIt:"Paste this into a chat with Targum enabled:",
   guidePrompt:"Hey, I've connected Targum (https://targum.video/mcp). Tell me what we can do together, then walk me through my first edit, one step at a time.", guideLabel:"Start with this", guideHomeLabel:"Once connected, start with this", guideFwLabel:"Not sure where to start? Let your assistant guide you",
   mcpExplainer:{t:"What's a connector?", p:"It's how your assistant gets to use Targum for you. You sign in with Google once and say yes to a permissions screen. From then on you just ask: find the best moment, clean up the ums, make a clip. You approve every change before it happens."},
@@ -316,10 +317,10 @@ en:{
     unsure:["Not sure about your plan?","Open your assistant's settings and look for a Connectors section. If it's there, follow the steps. If not, start in the editor."]
   },
   steps:{
-    signin:{t:"Create your Targum account", p:"Sign in with Google. This is the same account you'll approve when the assistant asks for access.", link:{href:CONFIG.loginUrl, label:"Open targum.video/login"}},
+    signin:{t:"Create your account in the Targum editor", p:"Sign up with Google at targum.video/editor. The editor is a separate product from the targum.video website, so sign up in the editor, not on the main site. This is the same account you'll approve when the assistant asks for access.", link:{href:CONFIG.signupUrl, label:"Sign up at targum.video/editor"}},
     claude_settings:{t:"Open Connectors in Claude settings", p:"On the web or desktop app, open your profile menu, then Settings, then Connectors. Scroll to the bottom and click Add custom connector.", link:{href:CONFIG.claudeConnectorsUrl, label:"Open Claude › Settings › Connectors"}},
     claude_add:{t:"Paste the Targum server address", p:"In the dialog, enter the URL below as the remote MCP server URL. Leave Advanced settings alone; Targum uses OAuth, so there's no client ID or secret to enter. Click Add."},
-    oauth:{t:"Approve access", p:"A Targum window opens. Sign in with Google and approve the permissions. By default the assistant can read, suggest and spend a little on analysis; it asks again before anything that uploads, renders or deletes."},
+    oauth:{t:"Approve access", p:"A Targum window opens. Sign in with the Google account you used in the Targum editor and approve the permissions. By default the assistant can read, suggest and spend a little on analysis; it asks again before anything that uploads, renders or deletes."},
     claude_enable:{t:"Turn Targum on in a chat", p:"Start a new chat. Click the + button at the bottom left, choose Connectors, and switch on Targum. It stays on for that conversation.", link:{href:CONFIG.claudeNewChatUrl, label:"Open a new chat in Claude"}},
     gpt_dev:{t:"Turn on developer mode", p:"On chatgpt.com, open Settings, then Connectors (sometimes called Apps). Open Advanced settings and switch Developer mode on. Add connectors on the web first; the desktop and mobile apps pick them up afterwards.", link:{href:CONFIG.chatgptConnectorsUrl, label:"Open ChatGPT › Settings › Connectors"}},
     gpt_create:{t:"Create the Targum connector", p:"Back in Connectors, click Create. Name it Targum, paste the server URL below, set authentication to OAuth, tick the trust box, then click Create.", link:{href:CONFIG.chatgptConnectorsUrl, label:"Open ChatGPT › Settings › Connectors"}},
@@ -350,7 +351,7 @@ en:{
     jump:(n)=>`Go to challenge ${n}`,
     preTitle:"Before you start", preLead:"Three things to have ready. Tick them off as you go.",
     pre:[
-      {id:"p1", t:"A Targum account", p:"Sign in with Google. It takes a few seconds.", link:"Sign in to Targum", href:"login"},
+      {id:"p1", t:"An account in the Targum editor", p:"Sign up with Google at targum.video/editor, not on the main targum.video website: they are separate products. It takes a few seconds.", link:"Sign up in the Targum editor", href:"signup"},
       {id:"p2", t:"Your assistant connected, with Targum turned on in the chat", p:"Claude or ChatGPT with the Targum connector added. In each new chat, check that Targum is switched on. Not set up yet? The setup guide takes about two minutes.", link:"Open the setup guide", href:"guide"},
       {id:"p3", t:"One recording uploaded", p:"Any podcast episode, interview or lesson between 5 and 30 minutes. Drop it into the editor and wait until the transcript appears.", link:"Open the editor", href:"editor"}
     ],
@@ -454,7 +455,7 @@ en:{
      fix:"Render is greyed out: select the clip first. It says you're out of credits: top up in the editor, then try again."}
   ]
   },
-  approval:{t:"First time signing in? Your account needs to be approved.", p:"New accounts are approved by hand, so you may not get in straight away. Give it a little while and try again. If it is taking too long, write to ", tail:" and mention you come from Francesco."},
+  approval:{t:"First time signing up? Your editor account needs to be approved.", p:"New accounts are approved by hand, so you may not get in straight away. Give it a little while and try again. If it is taking too long, write to ", tail:" and mention you come from Francesco."},
   whyTitle:"Why agent-first?", whyBody:"Agent-first tools let you hand the tedious work to an agent. That takes fresh eyes: do not use Targum like your old tools, click by click. Say what you want and let the assistant do the pass.",
   helpLine:"Claude's connector guide", faq:"Targum FAQ", privacy:"Answers are stored anonymously to improve this guide.",
 },
@@ -485,7 +486,7 @@ es:{
     chatgpt:{eyebrow:"Recomendado para ti", title:"Conecta Targum a ChatGPT", lead:"Añadirás Targum como conector en modo desarrollador. Después editas conversando: buscar momentos, limpiar tartamudeos, hacer clips, renderizar."},
     editor:{eyebrow:"Recomendado para ti", title:"Empieza en el editor de Targum", lead:"Sin asistente. El editor tiene las mismas herramientas basadas en la transcripción: búsqueda, limpieza, clips y subtítulos. Puedes conectar un asistente más adelante."}
   },
-  signin:"Iniciar sesión en Targum", openEditor:"Abrir el editor", copy:"Copiar", copied:"Copiado", copyPrompt:"Copiar prompt",
+  signin:"Regístrate en el editor de Targum", openEditor:"Abrir el editor", copy:"Copiar", copied:"Copiado", copyPrompt:"Copiar prompt",
   firstPrompt:"Tu primer prompt", tryIt:"Pégalo en un chat con Targum activado:",
   guidePrompt:"Hola, he conectado Targum (https://targum.video/mcp). Cuéntame qué podemos hacer juntos y luego guíame en mi primera edición, paso a paso.", guideLabel:"Empieza con esto", guideHomeLabel:"Cuando lo conectes, empieza con esto", guideFwLabel:"¿No sabes por dónde empezar? Deja que tu asistente te guíe",
   mcpExplainer:{t:"¿Qué es un conector?", p:"Es lo que permite que tu asistente use Targum por ti. Inicias sesión con Google una vez y aceptas una pantalla de permisos. Desde entonces solo pides: busca el mejor momento, limpia las muletillas, haz un clip. Tú apruebas cada cambio antes de que ocurra."},
@@ -498,10 +499,10 @@ es:{
     unsure:["¿No sabes qué plan tienes?","Abre los ajustes de tu asistente y busca una sección de Conectores. Si está, sigue los pasos. Si no, empieza en el editor."]
   },
   steps:{
-    signin:{t:"Crea tu cuenta de Targum", p:"Inicia sesión con Google. Es la misma cuenta que aprobarás cuando el asistente pida acceso.", link:{href:CONFIG.loginUrl, label:"Abrir targum.video/login"}},
+    signin:{t:"Crea tu cuenta en el editor de Targum", p:"Regístrate con Google en targum.video/editor. El editor es un producto distinto de la web targum.video, así que regístrate en el editor, no en la web principal. Es la misma cuenta que aprobarás cuando el asistente pida acceso.", link:{href:CONFIG.signupUrl, label:"Regístrate en targum.video/editor"}},
     claude_settings:{t:"Abre Conectores en los ajustes de Claude", p:"En la web o la app de escritorio, abre el menú de tu perfil, luego Settings y después Connectors. Baja hasta el final y pulsa Add custom connector.", link:{href:CONFIG.claudeConnectorsUrl, label:"Abrir Claude › Settings › Connectors"}},
     claude_add:{t:"Pega la dirección del servidor de Targum", p:"En el diálogo, introduce la URL de abajo como URL del servidor MCP remoto. No toques Advanced settings; Targum usa OAuth, así que no hay client ID ni secret. Pulsa Add."},
-    oauth:{t:"Aprueba el acceso", p:"Se abre una ventana de Targum. Inicia sesión con Google y aprueba los permisos. Por defecto el asistente puede leer, sugerir y gastar un poco en análisis; vuelve a preguntar antes de subir, renderizar o borrar."},
+    oauth:{t:"Aprueba el acceso", p:"Se abre una ventana de Targum. Inicia sesión con la cuenta de Google que usaste en el editor de Targum y aprueba los permisos. Por defecto el asistente puede leer, sugerir y gastar un poco en análisis; vuelve a preguntar antes de subir, renderizar o borrar."},
     claude_enable:{t:"Activa Targum en un chat", p:"Abre un chat nuevo. Pulsa el botón + abajo a la izquierda, elige Connectors y activa Targum. Se queda activado para esa conversación.", link:{href:CONFIG.claudeNewChatUrl, label:"Abrir un chat nuevo en Claude"}},
     gpt_dev:{t:"Activa el modo desarrollador", p:"En chatgpt.com, abre Settings y luego Connectors (a veces aparece como Apps). Entra en Advanced settings y activa Developer mode. Añade los conectores primero en la web; las apps de escritorio y móvil los recogen después.", link:{href:CONFIG.chatgptConnectorsUrl, label:"Abrir ChatGPT › Settings › Connectors"}},
     gpt_create:{t:"Crea el conector de Targum", p:"De vuelta en Connectors, pulsa Create. Ponle el nombre Targum, pega la URL del servidor de abajo, elige autenticación OAuth, marca la casilla de confianza y pulsa Create.", link:{href:CONFIG.chatgptConnectorsUrl, label:"Abrir ChatGPT › Settings › Connectors"}},
@@ -532,7 +533,7 @@ es:{
     jump:(n)=>`Ir al reto ${n}`,
     preTitle:"Antes de empezar", preLead:"Tres cosas que necesitas tener listas. Márcalas a medida que las tengas.",
     pre:[
-      {id:"p1", t:"Una cuenta de Targum", p:"Inicia sesión con Google. Son unos segundos.", link:"Iniciar sesión en Targum", href:"login"},
+      {id:"p1", t:"Una cuenta en el editor de Targum", p:"Regístrate con Google en targum.video/editor, no en la web principal targum.video: son productos distintos. Son unos segundos.", link:"Regístrate en el editor de Targum", href:"signup"},
       {id:"p2", t:"Tu asistente conectado, con Targum activado en el chat", p:"Claude o ChatGPT con el conector de Targum añadido. En cada chat nuevo, comprueba que Targum está activado. ¿Aún no lo has configurado? La guía de configuración lleva unos dos minutos.", link:"Abrir la guía de configuración", href:"guide"},
       {id:"p3", t:"Una grabación subida", p:"Cualquier episodio de pódcast, entrevista o clase de entre 5 y 30 minutos. Arrástrala al editor y espera a que aparezca la transcripción.", link:"Abrir el editor", href:"editor"}
     ],
@@ -636,7 +637,7 @@ es:{
      fix:"Render está desactivado: selecciona primero el clip. Dice que no te quedan créditos: recarga en el editor y vuelve a intentarlo."}
   ]
   },
-  approval:{t:"¿Primera vez que entras? Tu cuenta tiene que ser aprobada.", p:"Las cuentas nuevas se aprueban a mano, así que puede que no entres a la primera. Espera un poco y vuelve a intentarlo. Si tarda demasiado, escribe a ", tail:" y di que vienes de parte de Francesco."},
+  approval:{t:"¿Primera vez que te registras? Tu cuenta del editor tiene que ser aprobada.", p:"Las cuentas nuevas se aprueban a mano, así que puede que no entres a la primera. Espera un poco y vuelve a intentarlo. Si tarda demasiado, escribe a ", tail:" y di que vienes de parte de Francesco."},
   whyTitle:"¿Por qué agent-first?", whyBody:"Las herramientas agent-first te dejan delegar el trabajo tedioso en un agente. Eso pide ojos nuevos: no uses Targum como tus herramientas de siempre, clic a clic. Di lo que quieres y deja que el asistente haga la pasada.",
   helpLine:"Guía de conectores de Claude", faq:"FAQ de Targum", privacy:"Las respuestas se guardan de forma anónima para mejorar esta guía.",
 }};
@@ -718,7 +719,7 @@ function renderIntro(tr){
     h("h1",{html: tr.heroTitle.replace(/assistant|asistente/, m=>`<span class="mark">${m}</span>`)}),
     h("p",{class:"lead"},tr.heroLead),
     h("p",{class:"small heads"},tr.headsUp),
-    h("div",{class:"hero-row"}, h("button",{type:"button",class:"btn btn-primary",onclick:()=>{ state.screen="question"; state.qi=0; track("quiz_start"); saveSession(false); render(); }},tr.start,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","intro")},tr.skip), h("span",{class:"small"},tr.takes)),
+    h("div",{class:"hero-row"}, h("button",{type:"button",class:"btn btn-primary",onclick:()=>{ state.screen="question"; state.qi=0; track("quiz_start"); saveSession(false); render(); }},tr.start,"→"), h("a",{class:"btn btn-ghost",href:CONFIG.signupUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","intro")},tr.skip), h("span",{class:"small"},tr.takes)),
     h("button",{type:"button",class:"linkbtn",style:"justify-self:start",onclick:()=>goChallenges("intro")},(state.done.length?tr.fw.introContinue(state.done.length,IDS.length):tr.fw.introJump)+" →"),
     h("div",{class:"note why"}, h("b",{},tr.whyTitle), h("p",{},tr.whyBody), guideBox(tr,"home",tr.guideHomeLabel)),
     h("div",{class:"fact"}, tr.facts.map(([b,l])=>h("div",{},h("b",{},b),h("span",{},l))))
@@ -741,7 +742,7 @@ function renderResult(tr){
   const path=computePath(); const a=state.a; const P=tr.paths[path.key];
   const chips=h("div",{class:"chips"}, ["assistant","mcp","plan","editing","content"].filter(k=>a[k]).map(k=>{ const qk=questionKey(QUESTION_ORDER.indexOf(k)); const o=tr.q[qk].o.find(x=>x[0]===a[k]); return h("span",{class:"chip"}, o?o[1]:a[k]); }));
   const verdict=h("div",{class:"verdict"}, h("div",{class:"eyebrow"},P.eyebrow), h("h2",{},P.title), h("p",{},P.lead), chips,
-    h("div",{class:"hero-row"}, h("a",{class:"btn btn-primary",href:CONFIG.loginUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","verdict")},tr.signin,"→"), h("button",{type:"button",class:"btn btn-ghost",style:"color:var(--bg);border-color:#4C4A42",onclick:()=>{ state.screen="question"; state.qi=0; render(); }},tr.change)));
+    h("div",{class:"hero-row"}, h("a",{class:"btn btn-primary",href:CONFIG.signupUrl,target:"_blank",rel:"noopener",onclick:()=>track("signin_click","verdict")},tr.signin,"→"), h("button",{type:"button",class:"btn btn-ghost",style:"color:var(--bg);border-color:#4C4A42",onclick:()=>{ state.screen="question"; state.qi=0; render(); }},tr.change)));
   const BLOCKING=["claude_free","chatgpt_free"];
   const blockNotes=path.notes.filter(n=>BLOCKING.includes(n)), otherNotes=path.notes.filter(n=>!BLOCKING.includes(n));
   const sec=h("section",{class:"panel stack"});
@@ -780,7 +781,7 @@ function tailor(s){ const n=asstName(); return n? s.replace(/Claude or ChatGPT|C
 function editorMode(){ return computePath().key==="editor"; }
 function goChallenges(src){ state.screen="challenges"; track("challenge_view",src||null,state.lang); render(); }
 function goSetup(){ state.screen = state.a.assistant ? "result" : "intro"; render(); }
-function hrefFor(k){ return k==="login"?CONFIG.loginUrl:CONFIG.editorUrl; }
+function hrefFor(k){ return k==="signup"?CONFIG.signupUrl:CONFIG.editorUrl; }
 function toggleOpen(id){
   if(state.open.has(id)) state.open.delete(id);
   else { state.open.add(id); if(!state.started.has(id)){ state.started.add(id); track("challenge_start",id,null); } }
